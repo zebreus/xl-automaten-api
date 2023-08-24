@@ -86,7 +86,8 @@ console.log(pickup)
 
 ## API Documentation
 
-The API documentation is available at https://xl-automaten.github.io/xl-automaten-api/.
+There is no public API documentation for the XL Automaten API. This package is based on reverse engineering the API and
+emailing the people from XL Automaten.
 
 ## Older node versions\
 
