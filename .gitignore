@@ -19,4 +19,4 @@ dist/
 .eslintcache
 
 # test secret
-src/tests/login.ts
+# src/tests/login.ts
