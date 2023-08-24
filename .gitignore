@@ -17,3 +17,6 @@ lerna-debug.log*
 dist/
 # eslint
 .eslintcache
+
+# test secret
+src/tests/login.ts
