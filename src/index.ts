@@ -1,4 +1,6 @@
 export { archiveArticle, createArticle, getArticle, getArticles, updateArticle } from "article"
 export { createCategory, deleteCategory, getCategories, getCategory, updateCategory } from "category"
 export { login } from "login"
+export { createMachine, deleteMachine, getMachine, getMachines, updateMachine } from "machine"
+export { getMastermodules } from "mastermodule"
 export { createPickup, deletePickup, getPickup, getPickups, updatePickup } from "pickup"
