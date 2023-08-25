@@ -2,8 +2,11 @@ import {
   ApiPickupItem,
   NewPickup,
   Pickup,
+  UpdatePickup,
   apiCreatePickupResponseSchema,
   apiGetPickupResponseSchema,
+  apiGetPickupsResponseSchema,
+  apiUpdatePickupResponseSchema,
   convertApiPickup,
   convertPickupToRequest,
 } from "helpers/convertPickup"
@@ -40,6 +43,55 @@ export const createPickup = async (options: CreatePickupOptions): Promise<Pickup
     { ...options, schema: apiCreatePickupResponseSchema },
     "POST",
     "pickupcode",
+    requestBody
+  )
+
+  const pickup = convertApiPickup(response)
+
+  return pickup
+}
+
+type UpdatePickupOptions = {
+  /** Code of the pickup you want to update */
+  code: string
+  /** The fields you want to update */
+  pickup: UpdatePickup
+} & AuthenticatedApiRequestOptions
+
+/** Update an existing pickup
+ *
+ * ```typescript
+ * const pickup = await updatePickup({
+ *   code: "code-of-an-existing-pickup",
+ *   pickup: {
+ *     callback:
+ *   },
+ *   token: "your-token",
+ * })
+ *
+ * console.log(pickup)
+ * ```
+ *
+ * The updated pickup will be returned.
+ */
+export const updatePickup = async (options: UpdatePickupOptions): Promise<Pickup> => {
+  const pickupUpdate = options.pickup
+  const newPickup =
+    pickupUpdate.validFrom && pickupUpdate.validUntil && pickupUpdate.mastermoduleId
+      ? {
+          ...pickupUpdate,
+          code: options.code,
+          validFrom: pickupUpdate.validFrom,
+          validUntil: pickupUpdate.validUntil,
+          mastermoduleId: pickupUpdate.mastermoduleId,
+        }
+      : { ...(await getPickup({ code: options.code, token: options.token })), ...pickupUpdate }
+
+  const requestBody = convertPickupToRequest(newPickup)
+  const response = await makeApiRequest(
+    { ...options, schema: apiUpdatePickupResponseSchema },
+    "PUT",
+    `pickupcode/${encodeURIComponent(options.code)}`,
     requestBody
   )
 
@@ -104,7 +156,7 @@ type GetPickupOptions = {
  * console.log(pickup.items)
  * ```
  *
- * Returns the last state of the pickup before deletion.
+ * The result also includes short versions of all items included in the pickup.
  */
 export const getPickup = async (options: GetPickupOptions): Promise<Pickup & { items: ApiPickupItem[] }> => {
   const response = await makeApiRequest(
@@ -117,4 +169,24 @@ export const getPickup = async (options: GetPickupOptions): Promise<Pickup & { i
   const pickup = { ...pickupWithoutItems, items: response.items }
 
   return pickup
+}
+
+type GetPickupsOptions = AuthenticatedApiRequestOptions
+
+/** Get all pickups
+ *
+ * ```typescript
+ * const pickups = await getPickups({
+ *   token: "your-token",
+ * })
+ *
+ * pickups.forEach(pickup => console.log(pickup))
+ * ```
+ */
+export const getPickups = async (options: GetPickupsOptions): Promise<Array<Pickup>> => {
+  const response = await makeApiRequest({ ...options, schema: apiGetPickupsResponseSchema }, "GET", `pickupcodes`)
+
+  const pickups = response.map(receivedPickup => convertApiPickup(receivedPickup))
+
+  return pickups
 }

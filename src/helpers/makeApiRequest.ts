@@ -77,12 +77,12 @@ export async function makeApiRequest<ExpectedResponse>(
     apiUrl = "https://xlapi.xl-automaten.com/v1/",
     schema,
   }: ApiRequestOptions & { schema?: z.Schema<ExpectedResponse> },
-  method: "POST" | "GET" | "DELETE",
+  method: "POST" | "GET" | "DELETE" | "PUT",
   endpoint: string,
   content?: Record<string, unknown>
 ) {
   const url = `${apiUrl}${endpoint}`
-  const body = method === "POST" && content ? JSON.stringify(content) : null
+  const body = (method === "POST" || method === "PUT") && content ? JSON.stringify(content) : null
   const fetchFunctionOrPromise = passedFetchFunction || defaultFetch
   const fetchFunction = await fetchFunctionOrPromise
 
