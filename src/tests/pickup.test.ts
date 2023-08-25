@@ -1,18 +1,26 @@
-import { createPickup } from "createPickup"
-import { deletePickup } from "deletePickup"
-import { getPickup } from "getPickup"
 import { login } from "login"
+import { createPickup, deletePickup, getPickup } from "pickup"
 import { email, mastermoduleId, password } from "tests/login"
 
+let token = ""
+
 const getToken = async () => {
+  if (token) {
+    return token
+  }
   const result = await login({
     email,
     password,
   })
+  token = result.token
   return result.token
 }
 
 const randomString = () => Math.random().toString(36).substring(7)
+
+beforeAll(async () => {
+  getToken()
+})
 
 test("Create pickup seems to work", async () => {
   const token = await getToken()
