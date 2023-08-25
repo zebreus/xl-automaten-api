@@ -22,6 +22,9 @@ type CreateArticleOptions = {
  * const article = await createArticle({
  *   article: {
  *     name: "name-of-the-new-article"
+ *     number: "123456",
+ *     price: 4,
+ *     supplierId: supplierId,
  *   },
  *   token: "your-token",
  * })
