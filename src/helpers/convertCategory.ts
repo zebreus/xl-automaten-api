@@ -27,7 +27,7 @@ export type Category = {
   /** URL of a small preview image */
   previewImage?: string
   /** TODO: Figure out what this means */
-  priority: boolean
+  priority: number
 } & XlAutomatenDatabaseObject
 
 /** Category, but only the fields that can be edited */
@@ -49,7 +49,7 @@ export type ApiCategory = {
   /** URL of a small preview image */
   preview_img: string | null
   /** TODO: Figure out what this means */
-  priority: 0 | 1
+  priority: number
 }
 
 export const apiCategorySchema = z.object({
@@ -57,7 +57,7 @@ export const apiCategorySchema = z.object({
   description: z.string().nullable(),
   main_img: z.string().nullable(),
   preview_img: z.string().nullable(),
-  priority: z.literal(0).or(z.literal(1)),
+  priority: z.number(),
 })
 
 {
@@ -178,7 +178,7 @@ export const convertApiCategory = (response: MinimalApiCategoryResponse): Catego
     ...(response.description ? { description: response.description } : {}),
     ...(response.main_img ? { image: response.main_img } : {}),
     ...(response.preview_img ? { previewImage: response.preview_img } : {}),
-    priority: response.priority === 1 ? true : false,
+    priority: response.priority ?? 0,
     updatedAt: parseApiDate(response.updated_at),
     createdAt: parseApiDate(response.created_at),
     id: response.id,
@@ -193,7 +193,7 @@ export const convertCategoryToRequest = (request: NewCategory): ApiCreateCategor
     description: request.description || null,
     main_img: request.image || null,
     preview_img: request.previewImage || null,
-    priority: request.priority ? (1 as const) : (0 as const),
+    priority: request.priority ?? 0,
   }
 
   return result
