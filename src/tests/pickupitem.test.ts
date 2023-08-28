@@ -62,8 +62,8 @@ const getPickupId = async () => {
     },
   })
 
-  pickupCodesToDeleteAfterwards.push([pickup.code, pickup.internalId])
-  return pickup.internalId
+  pickupCodesToDeleteAfterwards.push([pickup.code, pickup.id])
+  return pickup.id
 }
 
 let testArticle: number

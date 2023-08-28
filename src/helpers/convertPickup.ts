@@ -1,24 +1,23 @@
 import { formatApiDate, parseApiDate } from "helpers/apiDates"
+import { ApiPickupItem, PickupItem, apiPickupItemSchema, convertApiPickupItem } from "helpers/convertPickupItem"
 import { z } from "zod"
 
 export type XlAutomatenDatabaseObject = {
-  /** User id of the user that created it */
-  userId: number
-  /** When the pickup was last changed
+  /** When the data was last changed
    *
    * Precision finer than seconds is not supported and is ignored
    */
   updatedAt: Date
-  /** When the pickup was created
+  /** When the data was created
    *
    * Precision finer than seconds is not supported and is ignored
    */
   createdAt: Date
   /** Internal id */
-  internalId: number
+  id: number
 }
 
-/** A pickup code */
+/** A pickup */
 export type Pickup = {
   /** The pickup code */
   code: string
@@ -72,24 +71,48 @@ export type Pickup = {
   preventAutoDeletion?: boolean
   /** An additional ID that will be stored with the pickup code */
   externalId?: string
+  /** User id of the user that created it
+   *
+   * Readonly
+   */
+  userId: number
 } & XlAutomatenDatabaseObject
 
+export type PickupItems = {
+  items: Array<PickupItem>
+}
+
 /** Pickup, but only the fields that can be edited */
-export type EditablePickup = Omit<Pickup, "code" | keyof XlAutomatenDatabaseObject>
-/** Data of a new pickup code
+export type EditablePickup = Omit<Pickup, keyof XlAutomatenDatabaseObject | "userId">
+
+/** Data of a new pickup
  *
- * All fields that are not required for creating a new pickup are set to optional.
+ * All fields that are not required for creating are set to optional.
  */
 export type NewPickup = Required<Pick<Pickup, "code" | "validFrom" | "validUntil" | "mastermoduleId">> &
   Partial<EditablePickup>
 
-/** Data of a pickup update
- *
- * The same as NewPickup, but without "code"
- *
- * Technically the API request requires code, but it is completely ignored, as the field is read-only. The updatePickup function inserts a dummy value into the actual call
- */
-export type UpdatePickup = Partial<EditablePickup>
+export type ApiXlAutomatenDatabaseObject = {
+  /** With seconds */
+  updated_at: string
+  /** With seconds */
+  created_at: string
+  /** Internal id */
+  id: number
+}
+
+export const apiXlAutomatenDatabaseObjectSchema = z.object({
+  updated_at: z.string(),
+  created_at: z.string(),
+  id: z.number(),
+})
+
+{
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const x: z.infer<typeof apiXlAutomatenDatabaseObjectSchema> = undefined as unknown as ApiXlAutomatenDatabaseObject
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const y: ApiXlAutomatenDatabaseObject = undefined as unknown as z.infer<typeof apiXlAutomatenDatabaseObjectSchema>
+}
 
 export type ApiPickup = {
   /** Used to enable pickup via RFID card or QR code
@@ -166,6 +189,8 @@ export type ApiPickup = {
    * TODO: Figure out if this has any functionality besides reflecting the ID back in the response
    */
   external_id: string | null
+  /** User id of the user that created it */
+  user_id: number
 }
 
 export const apiPickupSchema = z.object({
@@ -180,6 +205,7 @@ export const apiPickupSchema = z.object({
   callback: z.string().nullable(),
   auto_delete: z.literal(0).or(z.literal(1)),
   external_id: z.string().nullable(),
+  user_id: z.number(),
 })
 
 {
@@ -189,74 +215,70 @@ export const apiPickupSchema = z.object({
   const y: ApiPickup = undefined as unknown as z.infer<typeof apiPickupSchema>
 }
 
-export type ApiXlAutomatenDatabaseObject = {
-  /** User id of the user that created it */
-  user_id: number
-  /** With seconds */
-  updated_at: string
-  /** With seconds */
-  created_at: string
-  /** Internal id */
-  id: number
+export type ApiPickupItems = {
+  /** Categories that are associated with this article */
+  items: Array<ApiPickupItem & ApiXlAutomatenDatabaseObject>
 }
 
-export const apiXlAutomatenDatabaseObjectSchema = z.object({
-  user_id: z.number(),
-  updated_at: z.string(),
-  created_at: z.string(),
-  id: z.number(),
+export const apiPickupItemsSchema = z.object({
+  items: z.array(apiPickupItemSchema.and(apiXlAutomatenDatabaseObjectSchema)),
 })
 
 {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const x: z.infer<typeof apiXlAutomatenDatabaseObjectSchema> = undefined as unknown as ApiXlAutomatenDatabaseObject
+  const x: z.infer<typeof apiPickupItemsSchema> = undefined as unknown as ApiPickupItems
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const y: ApiXlAutomatenDatabaseObject = undefined as unknown as z.infer<typeof apiXlAutomatenDatabaseObjectSchema>
-}
-
-export type ApiPickupItem = {
-  /** The ID of the article */
-  article_id: number
-  /** TODO: Figure out what this means */
-  fixed_price: number
-  /** TODO: Figure out what this means */
-  price: number
-}
-
-export const apiPickupItemSchema = z.object({
-  article_id: z.number(),
-  fixed_price: z.number(),
-  price: z.number(),
-})
-
-{
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const x: z.infer<typeof apiPickupItemSchema> = undefined as unknown as ApiPickupItem
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const y: ApiPickupItem = undefined as unknown as z.infer<typeof apiPickupItemSchema>
+  const y: ApiPickupItems = undefined as unknown as z.infer<typeof apiPickupItemsSchema>
 }
 
 type PartialOrUndefined<T> = {
   [P in keyof T]?: T[P] | undefined
 }
 
-/** If the server responds with a pickup, at least the fields are included */
-export type MinimalApiPickupResponse = Required<
-  Pick<ApiPickup, "code" | "valid_from" | "valid_until" | "mastermodule_id" | "reserve_from">
-> &
+const fieldsRequiredForCreate = ["code", "valid_from", "valid_until", "mastermodule_id"] as const
+type FieldsRequiredForCreate = (typeof fieldsRequiredForCreate)[number]
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+const fieldsWithoutDefaultMap = fieldsRequiredForCreate.reduce(
+  (acc, cur) => ({ ...acc, [cur]: true as const }),
+  {} as Record<FieldsRequiredForCreate, true>
+)
+
+const fieldsThatAreReadOnly = [] as const
+type FieldsThatAreReadOnly = (typeof fieldsThatAreReadOnly)[number]
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+const fieldsThatAreReadOnlyMap = fieldsThatAreReadOnly.reduce(
+  (acc, cur) => ({ ...acc, [cur]: true as const }),
+  {} as Record<FieldsThatAreReadOnly, true>
+)
+
+const fieldsThatWillAlwaysGetReturned = [
+  "valid_from",
+  "valid_until",
+  "code",
+  "mastermodule_id",
+  "reserve_from",
+  "user_id",
+] as const
+type FieldsThatWillAlwaysGetReturned = (typeof fieldsThatWillAlwaysGetReturned)[number]
+const fieldsThatWillAlwaysGetReturnedMap = fieldsThatWillAlwaysGetReturned.reduce(
+  (acc, cur) => ({ ...acc, [cur]: true as const }),
+  {} as Record<FieldsThatWillAlwaysGetReturned, true>
+)
+
+/** If the server responds with a Pickup, at least the fields are included */
+export type MinimalApiPickupResponse = Required<Pick<ApiPickup, FieldsThatWillAlwaysGetReturned>> &
   PartialOrUndefined<ApiPickup> &
   ApiXlAutomatenDatabaseObject
 
-export type ApiCreatePickupRequest = Required<
-  Pick<ApiPickup, "code" | "valid_from" | "valid_until" | "mastermodule_id">
-> &
-  Partial<ApiPickup>
+export const minimalPickupResponseSchema = apiPickupSchema
+  .partial()
+  .required(fieldsThatWillAlwaysGetReturnedMap)
+  .and(apiXlAutomatenDatabaseObjectSchema)
+
+export type ApiCreatePickupRequest = Required<Pick<ApiPickup, FieldsRequiredForCreate>> & Partial<ApiPickup>
 export type ApiCreatePickupResponse = MinimalApiPickupResponse
 
-export const apiCreatePickupResponseSchema = apiPickupSchema
-  .partial()
-  .required({ code: true, valid_from: true, valid_until: true, mastermodule_id: true, reserve_from: true })
-  .and(apiXlAutomatenDatabaseObjectSchema)
+export const apiCreatePickupResponseSchema = minimalPickupResponseSchema
 
 {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -265,33 +287,8 @@ export const apiCreatePickupResponseSchema = apiPickupSchema
   const y: ApiCreatePickupResponse = undefined as unknown as z.infer<typeof apiCreatePickupResponseSchema>
 }
 
-export type ApiGetPickupRequest = void
-export type ApiGetPickupResponse = ApiPickup & ApiXlAutomatenDatabaseObject & { items: Array<ApiPickupItem> }
-
-export const apiGetPickupResponseSchema = apiPickupSchema
-  .and(apiXlAutomatenDatabaseObjectSchema)
-  .and(z.object({ items: z.array(apiPickupItemSchema) }))
-
-{
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const x: z.infer<typeof apiGetPickupResponseSchema> = undefined as unknown as ApiGetPickupResponse
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const y: ApiGetPickupResponse = undefined as unknown as z.infer<typeof apiGetPickupResponseSchema>
-}
-
-export type ApiGetPickupsRequest = void
-export type ApiGetPickupsResponse = Array<ApiGetPickupResponse>
-
-export const apiGetPickupsResponseSchema = z.array(apiGetPickupResponseSchema)
-
-{
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const x: z.infer<typeof apiGetPickupsResponseSchema> = undefined as unknown as ApiGetPickupsResponse
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const y: ApiGetPickupsResponse = undefined as unknown as z.infer<typeof apiGetPickupsResponseSchema>
-}
-
-export type ApiUpdatePickupRequest = ApiCreatePickupRequest
+export type ApiUpdatePickupRequest = Required<Omit<Pick<ApiPickup, FieldsRequiredForCreate>, FieldsThatAreReadOnly>> &
+  Partial<ApiPickup>
 export type ApiUpdatePickupResponse = ApiPickup & ApiXlAutomatenDatabaseObject
 
 export const apiUpdatePickupResponseSchema = apiPickupSchema.and(apiXlAutomatenDatabaseObjectSchema)
@@ -301,6 +298,20 @@ export const apiUpdatePickupResponseSchema = apiPickupSchema.and(apiXlAutomatenD
   const x: z.infer<typeof apiUpdatePickupResponseSchema> = undefined as unknown as ApiUpdatePickupResponse
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const y: ApiUpdatePickupResponse = undefined as unknown as z.infer<typeof apiUpdatePickupResponseSchema>
+}
+
+export type ApiGetPickupRequest = void
+export type ApiGetPickupResponse = ApiPickup & ApiXlAutomatenDatabaseObject & ApiPickupItems
+
+export const apiGetPickupResponseSchema = apiPickupSchema
+  .and(apiXlAutomatenDatabaseObjectSchema)
+  .and(apiPickupItemsSchema)
+
+{
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const x: z.infer<typeof apiGetPickupResponseSchema> = undefined as unknown as ApiGetPickupResponse
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const y: ApiGetPickupResponse = undefined as unknown as z.infer<typeof apiGetPickupResponseSchema>
 }
 
 export type ApiDeletePickupRequest = void
@@ -315,7 +326,21 @@ export const apiDeletePickupResponseSchema = apiPickupSchema.and(apiXlAutomatenD
   const y: ApiDeletePickupResponse = undefined as unknown as z.infer<typeof apiDeletePickupResponseSchema>
 }
 
-export const convertApiPickup = (response: MinimalApiPickupResponse): Pickup => {
+export type ApiGetPickupsRequest = void
+export type ApiGetPickupsResponse = Array<ApiPickup & ApiXlAutomatenDatabaseObject & ApiPickupItems>
+
+export const apiGetPickupsResponseSchema = z.array(
+  apiPickupSchema.and(apiXlAutomatenDatabaseObjectSchema).and(apiPickupItemsSchema)
+)
+
+{
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const x: z.infer<typeof apiGetPickupsResponseSchema> = undefined as unknown as ApiGetPickupsResponse
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const y: ApiGetPickupsResponse = undefined as unknown as z.infer<typeof apiGetPickupsResponseSchema>
+}
+
+export function convertApiPickup(response: MinimalApiPickupResponse): Pickup {
   const result = {
     code: response.code,
     validFrom: parseApiDate(response.valid_from),
@@ -331,7 +356,17 @@ export const convertApiPickup = (response: MinimalApiPickupResponse): Pickup => 
     userId: response.user_id,
     updatedAt: parseApiDate(response.updated_at),
     createdAt: parseApiDate(response.created_at),
-    internalId: response.id,
+    id: response.id,
+  } satisfies Pickup
+
+  return result
+}
+
+export function convertApiPickupWithItems(response: ApiPickupItems & MinimalApiPickupResponse): Pickup & PickupItems {
+  const pickup = convertApiPickup(response)
+  const result = {
+    ...pickup,
+    items: response.items.map(convertApiPickupItem),
   }
 
   return result
@@ -350,7 +385,7 @@ export const convertPickupToRequest = (request: NewPickup): ApiCreatePickupReque
     ...(request.callback ? { callback: request.callback } : {}),
     auto_delete: request.preventAutoDeletion ? (0 as const) : (1 as const),
     ...(request.externalId ? { external_id: request.externalId } : {}),
-  }
+  } satisfies ApiCreatePickupRequest
 
   return result
 }

@@ -1,14 +1,15 @@
 import {
-  ApiPickupItem,
+  EditablePickup,
   NewPickup,
   Pickup,
-  UpdatePickup,
+  PickupItems,
   apiCreatePickupResponseSchema,
   apiDeletePickupResponseSchema,
   apiGetPickupResponseSchema,
   apiGetPickupsResponseSchema,
   apiUpdatePickupResponseSchema,
   convertApiPickup,
+  convertApiPickupWithItems,
   convertPickupToRequest,
 } from "helpers/convertPickup"
 import { AuthenticatedApiRequestOptions, makeApiRequest } from "helpers/makeApiRequest"
@@ -56,7 +57,7 @@ type UpdatePickupOptions = {
   /** Code of the pickup you want to update */
   code: string
   /** The fields you want to update */
-  pickup: UpdatePickup
+  pickup: Partial<EditablePickup>
 } & AuthenticatedApiRequestOptions
 
 /** Update an existing pickup
@@ -159,15 +160,14 @@ type GetPickupOptions = {
  *
  * The result also includes short versions of all items included in the pickup.
  */
-export const getPickup = async (options: GetPickupOptions): Promise<Pickup & { items: ApiPickupItem[] }> => {
+export const getPickup = async (options: GetPickupOptions): Promise<Pickup & PickupItems> => {
   const response = await makeApiRequest(
     { ...options, schema: apiGetPickupResponseSchema },
     "GET",
     `pickupcode/${encodeURIComponent(options.code)}`
   )
 
-  const pickupWithoutItems = convertApiPickup(response)
-  const pickup = { ...pickupWithoutItems, items: response.items }
+  const pickup = convertApiPickupWithItems(response)
 
   return pickup
 }
@@ -184,10 +184,10 @@ type GetPickupsOptions = AuthenticatedApiRequestOptions
  * pickups.forEach(pickup => console.log(pickup))
  * ```
  */
-export const getPickups = async (options: GetPickupsOptions): Promise<Array<Pickup>> => {
+export const getPickups = async (options: GetPickupsOptions): Promise<Array<Pickup & PickupItems>> => {
   const response = await makeApiRequest({ ...options, schema: apiGetPickupsResponseSchema }, "GET", `pickupcodes`)
 
-  const pickups = response.map(receivedPickup => convertApiPickup(receivedPickup))
+  const pickups = response.map(receivedPickup => convertApiPickupWithItems(receivedPickup))
 
   return pickups
 }
