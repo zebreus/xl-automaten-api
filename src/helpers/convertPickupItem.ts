@@ -1,20 +1,10 @@
-import { parseApiDate } from "helpers/apiDates"
+import {
+  ApiXlAutomatenDatabaseObject,
+  XlAutomatenDatabaseObject,
+  apiXlAutomatenDatabaseObjectSchema,
+  convertApiXlAutomatenDatabaseObject,
+} from "helpers/convertXlAutomatenDatabaseObject"
 import { z } from "zod"
-
-export type XlAutomatenDatabaseObject = {
-  /** When the data was last changed
-   *
-   * Precision finer than seconds is not supported and is ignored
-   */
-  updatedAt: Date
-  /** When the data was created
-   *
-   * Precision finer than seconds is not supported and is ignored
-   */
-  createdAt: Date
-  /** Internal id */
-  id: number
-}
 
 /** A pickupitem */
 export type PickupItem = {
@@ -48,28 +38,6 @@ export type EditablePickupItem = Omit<PickupItem, keyof XlAutomatenDatabaseObjec
  */
 export type NewPickupItem = Required<Pick<PickupItem, "pickupId" | "articleId" | "overrideArticlePrice">> &
   Partial<EditablePickupItem>
-
-export type ApiXlAutomatenDatabaseObject = {
-  /** With seconds */
-  updated_at: string
-  /** With seconds */
-  created_at: string
-  /** Internal id */
-  id: number
-}
-
-export const apiXlAutomatenDatabaseObjectSchema = z.object({
-  updated_at: z.string(),
-  created_at: z.string(),
-  id: z.number(),
-})
-
-{
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const x: z.infer<typeof apiXlAutomatenDatabaseObjectSchema> = undefined as unknown as ApiXlAutomatenDatabaseObject
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const y: ApiXlAutomatenDatabaseObject = undefined as unknown as z.infer<typeof apiXlAutomatenDatabaseObjectSchema>
-}
 
 export type ApiPickupItem = {
   /** ID of the pickup code this item belongs to
@@ -209,9 +177,7 @@ export const apiGetPickupItemsResponseSchema = z.array(apiPickupItemSchema.and(a
 
 export const convertApiPickupItem = (response: MinimalApiPickupItemResponse): PickupItem => {
   const result = {
-    updatedAt: parseApiDate(response.updated_at),
-    createdAt: parseApiDate(response.created_at),
-    id: response.id,
+    ...convertApiXlAutomatenDatabaseObject(response),
     pickupId: response.pickup_code_id,
     articleId: response.article_id,
     overrideArticlePrice: response.fixed_price == 1 ? response.price : undefined,

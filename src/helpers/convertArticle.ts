@@ -1,21 +1,11 @@
-import { parseApiDate } from "helpers/apiDates"
 import { ApiCategory, Category, apiCategorySchema, convertApiCategory } from "helpers/convertCategory"
+import {
+  ApiXlAutomatenDatabaseObject,
+  XlAutomatenDatabaseObject,
+  apiXlAutomatenDatabaseObjectSchema,
+  convertApiXlAutomatenDatabaseObject,
+} from "helpers/convertXlAutomatenDatabaseObject"
 import { z } from "zod"
-
-export type XlAutomatenDatabaseObject = {
-  /** When the data was last changed
-   *
-   * Precision finer than seconds is not supported and is ignored
-   */
-  updatedAt: Date
-  /** When the data was created
-   *
-   * Precision finer than seconds is not supported and is ignored
-   */
-  createdAt: Date
-  /** Internal id */
-  id: number
-}
 
 /** A article */
 export type Article = {
@@ -185,28 +175,6 @@ export type EditableArticle = Omit<Article, "archived" | keyof XlAutomatenDataba
  * All fields that are not required for creating are set to optional.
  */
 export type NewArticle = Required<Pick<Article, "number" | "name" | "price" | "supplierId">> & Partial<EditableArticle>
-
-export type ApiXlAutomatenDatabaseObject = {
-  /** With seconds */
-  updated_at: string
-  /** With seconds */
-  created_at: string
-  /** Internal id */
-  id: number
-}
-
-export const apiXlAutomatenDatabaseObjectSchema = z.object({
-  updated_at: z.string(),
-  created_at: z.string(),
-  id: z.number(),
-})
-
-{
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const x: z.infer<typeof apiXlAutomatenDatabaseObjectSchema> = undefined as unknown as ApiXlAutomatenDatabaseObject
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const y: ApiXlAutomatenDatabaseObject = undefined as unknown as z.infer<typeof apiXlAutomatenDatabaseObjectSchema>
-}
 
 export type ApiArticle = {
   /** ID of the article */
@@ -572,9 +540,7 @@ export const convertApiArticle = (response: MinimalApiArticleResponse): Article 
     isHandover: response.is_handover === 1 ? true : false,
     isLend: response.is_lend,
     activeLendings: response.active_lendings ?? [],
-    updatedAt: parseApiDate(response.updated_at),
-    createdAt: parseApiDate(response.created_at),
-    id: response.id,
+    ...convertApiXlAutomatenDatabaseObject(response),
   } satisfies Article
 
   return result

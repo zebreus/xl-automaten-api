@@ -1,20 +1,10 @@
-import { parseApiDate } from "helpers/apiDates"
+import {
+  ApiXlAutomatenDatabaseObject,
+  XlAutomatenDatabaseObject,
+  apiXlAutomatenDatabaseObjectSchema,
+  convertApiXlAutomatenDatabaseObject,
+} from "helpers/convertXlAutomatenDatabaseObject"
 import { z } from "zod"
-
-export type XlAutomatenDatabaseObject = {
-  /** When the data was last changed
-   *
-   * Precision finer than seconds is not supported and is ignored
-   */
-  updatedAt: Date
-  /** When the data was created
-   *
-   * Precision finer than seconds is not supported and is ignored
-   */
-  createdAt: Date
-  /** Internal id */
-  id: number
-}
 
 /** A supplier */
 export type Supplier = {
@@ -33,28 +23,6 @@ export type EditableSupplier = Omit<Supplier, keyof XlAutomatenDatabaseObject>
  */
 export type NewSupplier = Required<Pick<Supplier, "name" | "email">> & Partial<EditableSupplier>
 export type UpdateSupplier = Required<Pick<Supplier, "name">> & Partial<EditableSupplier>
-
-export type ApiXlAutomatenDatabaseObject = {
-  /** With seconds */
-  updated_at: string
-  /** With seconds */
-  created_at: string
-  /** Internal id */
-  id: number
-}
-
-export const apiXlAutomatenDatabaseObjectSchema = z.object({
-  updated_at: z.string(),
-  created_at: z.string(),
-  id: z.number(),
-})
-
-{
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const x: z.infer<typeof apiXlAutomatenDatabaseObjectSchema> = undefined as unknown as ApiXlAutomatenDatabaseObject
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const y: ApiXlAutomatenDatabaseObject = undefined as unknown as z.infer<typeof apiXlAutomatenDatabaseObjectSchema>
-}
 
 export type ApiSupplier = {
   /** Name of the supplier */
@@ -173,9 +141,7 @@ export const apiGetSuppliersResponseSchema = z.array(apiSupplierSchema.and(apiXl
 
 export const convertApiSupplier = (response: MinimalApiSupplierResponse): Supplier => {
   const result = {
-    updatedAt: parseApiDate(response.updated_at),
-    createdAt: parseApiDate(response.created_at),
-    id: response.id,
+    ...convertApiXlAutomatenDatabaseObject(response),
     name: response.name,
     email: response.email,
   } satisfies Supplier

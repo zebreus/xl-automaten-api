@@ -1,13 +1,16 @@
 import { ApiArticle, Article, apiArticleSchema, convertApiArticle } from "helpers/convertArticle"
 import {
   ApiCategory,
-  ApiXlAutomatenDatabaseObject,
   Category,
   MinimalApiCategoryResponse,
   apiCategorySchema,
-  apiXlAutomatenDatabaseObjectSchema,
   convertApiCategory,
 } from "helpers/convertCategory"
+import {
+  ApiXlAutomatenDatabaseObject,
+  apiXlAutomatenDatabaseObjectSchema,
+} from "helpers/convertXlAutomatenDatabaseObject"
+
 import { z } from "zod"
 
 export type CategoryArticles = {
