@@ -14,7 +14,7 @@ import {
 } from "helpers/convertPickup"
 import { AuthenticatedApiRequestOptions, makeApiRequest } from "helpers/makeApiRequest"
 
-type CreatePickupOptions = {
+export type CreatePickupOptions = {
   /** Data of the new pickup */
   pickup: NewPickup
 } & AuthenticatedApiRequestOptions
@@ -53,7 +53,7 @@ export const createPickup = async (options: CreatePickupOptions): Promise<Pickup
   return pickup
 }
 
-type UpdatePickupOptions = {
+export type UpdatePickupOptions = {
   /** Code of the pickup you want to update */
   code: string
   /** The fields you want to update */
@@ -102,7 +102,7 @@ export const updatePickup = async (options: UpdatePickupOptions): Promise<Pickup
   return pickup
 }
 
-type DeletePickupOptions = {
+export type DeletePickupOptions = {
   /** Code of the pickup you want to delete */
   code: string
 } & AuthenticatedApiRequestOptions
@@ -139,7 +139,7 @@ export const deletePickup = async (options: DeletePickupOptions): Promise<Pickup
   return pickup
 }
 
-type GetPickupOptions = {
+export type GetPickupOptions = {
   /** Code of the pickup you want to retrieve */
   code: string
 } & AuthenticatedApiRequestOptions
@@ -172,7 +172,7 @@ export const getPickup = async (options: GetPickupOptions): Promise<Pickup & Pic
   return pickup
 }
 
-type GetPickupsOptions = AuthenticatedApiRequestOptions
+export type GetPickupsOptions = AuthenticatedApiRequestOptions
 
 /** Get all pickups
  *

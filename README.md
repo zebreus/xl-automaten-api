@@ -84,10 +84,21 @@ const pickup = await createPickup({
 console.log(pickup)
 ```
 
+### Other operations
+
+You can also create articles (`createArticle`) and add them to a pickup with `createPickupItem`. This library also
+includes functions for accessing `machines` (e.g., `createMachine`), `mastermodules` (`getMastermodules`), `trays`,
+`positions`, `categories`, and `suppliers`. The source code includes comments with examples for these endpoints.
+
 ## API Documentation
 
 There is no public API documentation for the XL Automaten API. This package is based on reverse engineering the API and
 emailing the people from XL Automaten.
+
+I am still figuring out how everything works, so the API is not yet stable. I will update the README once I have enough
+confidence in the correctness of this package.
+
+Most endpoints are documented in TypeScript in the src/helpers/convert\*.ts files.
 
 ## Older node versions\
 

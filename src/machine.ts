@@ -16,7 +16,7 @@ import {
 } from "helpers/convertMachine"
 import { AuthenticatedApiRequestOptions, makeApiRequest } from "helpers/makeApiRequest"
 
-type CreateMachineOptions = {
+export type CreateMachineOptions = {
   /** The new machine */
   machine: NewMachine
 } & AuthenticatedApiRequestOptions
@@ -58,7 +58,7 @@ export const createMachine = async (options: CreateMachineOptions): Promise<Mach
   return machine
 }
 
-type GetMachineOptions = {
+export type GetMachineOptions = {
   /** ID of the machine you want to retrieve */
   id: number
 } & AuthenticatedApiRequestOptions
@@ -86,7 +86,7 @@ export const getMachine = async (options: GetMachineOptions): Promise<Machine> =
   return machine
 }
 
-type GetMachinesOptions = AuthenticatedApiRequestOptions
+export type GetMachinesOptions = AuthenticatedApiRequestOptions
 
 /** Get all machines
  *
@@ -108,7 +108,7 @@ export const getMachines = async (
   return machines
 }
 
-type UpdateMachineOptions = {
+export type UpdateMachineOptions = {
   /** ID of the machine */
   id: number
   /** Updates to the machine */
@@ -170,7 +170,7 @@ export const updateMachine = async (options: UpdateMachineOptions): Promise<Mach
   return machine
 }
 
-type DeleteMachineOptions = {
+export type DeleteMachineOptions = {
   /** ID of the machine you want to delete */
   id: number
 } & AuthenticatedApiRequestOptions

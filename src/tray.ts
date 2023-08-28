@@ -14,7 +14,7 @@ import {
 } from "helpers/convertTray"
 import { AuthenticatedApiRequestOptions, makeApiRequest } from "helpers/makeApiRequest"
 
-type CreateTrayOptions = {
+export type CreateTrayOptions = {
   /** Data of the new tray */
   tray: NewTray
 } & AuthenticatedApiRequestOptions
@@ -53,7 +53,7 @@ export const createTray = async (options: CreateTrayOptions): Promise<Tray> => {
   return tray
 }
 
-type GetTrayOptions = {
+export type GetTrayOptions = {
   /** id of the tray you want to retrieve */
   id: number
 } & AuthenticatedApiRequestOptions
@@ -81,7 +81,7 @@ export const getTray = async (options: GetTrayOptions): Promise<Tray> => {
   return tray
 }
 
-type GetTraysOptions = AuthenticatedApiRequestOptions
+export type GetTraysOptions = AuthenticatedApiRequestOptions
 
 /** Get all trays
  *
@@ -101,7 +101,7 @@ export const getTrays = async (options: GetTraysOptions): Promise<Array<Tray & T
   return trays
 }
 
-type UpdateTrayOptions = {
+export type UpdateTrayOptions = {
   /** ID of the tray */
   id: number
   /** New data */
@@ -156,7 +156,7 @@ export const updateTray = async (options: UpdateTrayOptions): Promise<Tray> => {
   return tray
 }
 
-type DeleteTrayOptions = {
+export type DeleteTrayOptions = {
   /** ID of the tray you want to delete */
   id: number
 } & AuthenticatedApiRequestOptions

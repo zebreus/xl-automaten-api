@@ -12,7 +12,7 @@ import {
 } from "helpers/convertPosition"
 import { AuthenticatedApiRequestOptions, makeApiRequest } from "helpers/makeApiRequest"
 
-type CreatePositionOptions = {
+export type CreatePositionOptions = {
   /** Data of the new position */
   position: NewPosition
 } & AuthenticatedApiRequestOptions
@@ -50,7 +50,7 @@ export const createPosition = async (options: CreatePositionOptions): Promise<Po
   return position
 }
 
-type GetPositionOptions = {
+export type GetPositionOptions = {
   /** id of the position you want to retrieve */
   id: number
 } & AuthenticatedApiRequestOptions
@@ -78,7 +78,7 @@ export const getPosition = async (options: GetPositionOptions): Promise<Position
   return position
 }
 
-type GetPositionsOptions = AuthenticatedApiRequestOptions
+export type GetPositionsOptions = AuthenticatedApiRequestOptions
 
 /** Get all positions
  *
@@ -98,7 +98,7 @@ export const getPositions = async (options: GetPositionsOptions): Promise<Array<
   return positions
 }
 
-type UpdatePositionOptions = {
+export type UpdatePositionOptions = {
   /** ID of the position */
   id: number
   /** All fields that should get updated */
@@ -140,7 +140,7 @@ export const updatePosition = async (options: UpdatePositionOptions): Promise<Po
   return position
 }
 
-type DeletePositionOptions = {
+export type DeletePositionOptions = {
   /** ID of the position you want to delete */
   id: number
 } & AuthenticatedApiRequestOptions

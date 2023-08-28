@@ -12,7 +12,7 @@ import {
 } from "helpers/convertSupplier"
 import { AuthenticatedApiRequestOptions, makeApiRequest } from "helpers/makeApiRequest"
 
-type CreateSupplierOptions = {
+export type CreateSupplierOptions = {
   /** Data of the new supplier */
   supplier: NewSupplier
 } & AuthenticatedApiRequestOptions
@@ -47,7 +47,7 @@ export const createSupplier = async (options: CreateSupplierOptions): Promise<Su
   return supplier
 }
 
-type GetSuppliersOptions = AuthenticatedApiRequestOptions
+export type GetSuppliersOptions = AuthenticatedApiRequestOptions
 
 /** Get all suppliers
  *
@@ -67,7 +67,7 @@ export const getSuppliers = async (options: GetSuppliersOptions): Promise<Array<
   return suppliers
 }
 
-type GetSupplierOptions = {
+export type GetSupplierOptions = {
   /** id of the supplier you want to retrieve */
   id: number
 } & AuthenticatedApiRequestOptions
@@ -97,7 +97,7 @@ export const getSupplier = async (options: GetSupplierOptions): Promise<Supplier
   return supplier
 }
 
-type UpdateSupplierOptions = {
+export type UpdateSupplierOptions = {
   /** ID of the supplier */
   id: number
   /** New data */
@@ -144,7 +144,7 @@ export const updateSupplier = async (options: UpdateSupplierOptions): Promise<Su
   return supplier
 }
 
-type DeleteSupplierOptions = {
+export type DeleteSupplierOptions = {
   /** ID of the supplier you want to delete */
   id: number
 } & AuthenticatedApiRequestOptions

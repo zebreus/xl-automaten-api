@@ -16,7 +16,7 @@ import {
 } from "helpers/convertArticle"
 import { AuthenticatedApiRequestOptions, makeApiRequest } from "helpers/makeApiRequest"
 
-type CreateArticleOptions = {
+export type CreateArticleOptions = {
   /** Data of the new article */
   article: NewArticle
 } & AuthenticatedApiRequestOptions
@@ -53,7 +53,7 @@ export const createArticle = async (options: CreateArticleOptions): Promise<Arti
   return article
 }
 
-type GetArticleOptions = {
+export type GetArticleOptions = {
   /** id of the article you want to retrieve */
   id: number
 } & AuthenticatedApiRequestOptions
@@ -81,7 +81,7 @@ export const getArticle = async (options: GetArticleOptions): Promise<Article & 
   return article
 }
 
-type GetArticlesOptions = AuthenticatedApiRequestOptions
+export type GetArticlesOptions = AuthenticatedApiRequestOptions
 
 /** Get all articles
  *
@@ -103,7 +103,7 @@ export const getArticles = async (
   return articles
 }
 
-type UpdateArticleOptions = {
+export type UpdateArticleOptions = {
   /** ID of the article */
   id: number
   /** The updated fields */
@@ -155,7 +155,7 @@ export const updateArticle = async (options: UpdateArticleOptions): Promise<Arti
   return article
 }
 
-type DeleteArticleOptions = {
+export type ArchiveArticleOptions = {
   /** ID of the article you want to delete */
   id: number
 } & AuthenticatedApiRequestOptions
@@ -175,7 +175,7 @@ type DeleteArticleOptions = {
  *
  * Articles are not really getting deleted. The only thing this does is setting `archived` to true.
  */
-export const archiveArticle = async (options: DeleteArticleOptions): Promise<Article> => {
+export const archiveArticle = async (options: ArchiveArticleOptions): Promise<Article> => {
   const response = await makeApiRequest(
     { ...options, schema: apiDeleteArticleResponseSchema },
     "DELETE",

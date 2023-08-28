@@ -16,7 +16,7 @@ import {
 } from "helpers/convertCategoryAvoidDependencyCycle"
 import { AuthenticatedApiRequestOptions, makeApiRequest } from "helpers/makeApiRequest"
 
-type CreateCategoryOptions = {
+export type CreateCategoryOptions = {
   /** Data of the new category */
   category: NewCategory
 } & AuthenticatedApiRequestOptions
@@ -50,7 +50,7 @@ export const createCategory = async (options: CreateCategoryOptions): Promise<Ca
   return category
 }
 
-type GetCategoryOptions = {
+export type GetCategoryOptions = {
   /** id of the category you want to retrieve */
   id: number
 } & AuthenticatedApiRequestOptions
@@ -78,7 +78,7 @@ export const getCategory = async (options: GetCategoryOptions): Promise<Category
   return category
 }
 
-type GetCategoriesOptions = AuthenticatedApiRequestOptions
+export type GetCategoriesOptions = AuthenticatedApiRequestOptions
 
 /** Get all categories
  *
@@ -98,7 +98,7 @@ export const getCategories = async (options: GetCategoriesOptions): Promise<Arra
   return categories
 }
 
-type UpdateCategoryOptions = {
+export type UpdateCategoryOptions = {
   /** ID of the category */
   id: number
   /** New data
@@ -146,7 +146,7 @@ export const updateCategory = async (options: UpdateCategoryOptions): Promise<Ca
   return category
 }
 
-type DeleteCategoryOptions = {
+export type DeleteCategoryOptions = {
   /** ID of the category you want to delete */
   id: number
 } & AuthenticatedApiRequestOptions

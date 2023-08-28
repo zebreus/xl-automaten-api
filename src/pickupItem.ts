@@ -10,7 +10,7 @@ import {
 } from "helpers/convertPickupItem"
 import { AuthenticatedApiRequestOptions, makeApiRequest } from "helpers/makeApiRequest"
 
-type CreatePickupItemOptions = {
+export type CreatePickupItemOptions = {
   /** Data of the new pickupItem */
   pickupItem: NewPickupItem
 } & AuthenticatedApiRequestOptions
@@ -46,7 +46,7 @@ export const createPickupItem = async (options: CreatePickupItemOptions): Promis
   return pickupItem
 }
 
-type UpdatePickupItemOptions = {
+export type UpdatePickupItemOptions = {
   /** ID of the pickupItem */
   id: number
   /** New data
@@ -89,7 +89,7 @@ export const updatePickupItem = async (options: UpdatePickupItemOptions): Promis
   return pickupItem
 }
 
-type DeletePickupItemOptions = {
+export type DeletePickupItemOptions = {
   /** ID of the pickupItem you want to delete */
   id: number
 } & AuthenticatedApiRequestOptions

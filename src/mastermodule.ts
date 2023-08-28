@@ -1,7 +1,7 @@
 import { Mastermodule, apiGetMastermodulesResponseSchema, convertApiMastermodule } from "helpers/convertMastermodule"
 import { AuthenticatedApiRequestOptions, makeApiRequest } from "helpers/makeApiRequest"
 
-type GetMastermodulesOptions = AuthenticatedApiRequestOptions
+export type GetMastermodulesOptions = AuthenticatedApiRequestOptions
 
 /** Get all mastermodules
  *

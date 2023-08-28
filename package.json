@@ -1,7 +1,7 @@
 {
   "name": "xl-automaten-api",
-  "version": "0.0.0",
-  "description": "A TypeScript client library for the XL Automaten API",
+  "version": "0.0.1",
+  "description": "Unofficial TypeScript client library for the XL Automaten API",
   "author": {
     "name": "Zebreus",
     "email": "lennarteichhorn@googlemail.com"

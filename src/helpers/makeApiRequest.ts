@@ -6,7 +6,7 @@ export type FetchFunction = (
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   config: Record<string, any>
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-) => Promise<{ json: () => Promise<any>; ok: boolean; status: number; statusText: string }>
+) => Promise<{ text: () => Promise<string>; ok: boolean; status: number; statusText: string }>
 
 /** Basic options for every request */
 export type ApiRequestOptions = {
@@ -90,7 +90,7 @@ export async function makeApiRequest<ExpectedResponse>(
     throw new Error("fetch is not available. Use node >= 18 or install node-fetch")
   }
 
-  const response = await fetch(url, {
+  const response = await fetchFunction(url, {
     method,
     body,
     headers: {
