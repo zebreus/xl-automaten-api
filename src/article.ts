@@ -1,12 +1,17 @@
 import {
   Article,
+  ArticleCategories,
+  ArticleExtraFields,
   EditableArticle,
   NewArticle,
   apiCreateArticleResponseSchema,
+  apiDeleteArticleResponseSchema,
   apiGetArticleResponseSchema,
   apiGetArticlesResponseSchema,
   apiUpdateArticleResponseSchema,
   convertApiArticle,
+  convertApiArticleWithCategories,
+  convertApiArticleWithExtraFields,
   convertArticleToRequest,
 } from "helpers/convertArticle"
 import { AuthenticatedApiRequestOptions, makeApiRequest } from "helpers/makeApiRequest"
@@ -64,14 +69,14 @@ type GetArticleOptions = {
  * console.log(article)
  * ```
  */
-export const getArticle = async (options: GetArticleOptions): Promise<Article> => {
+export const getArticle = async (options: GetArticleOptions): Promise<Article & ArticleExtraFields> => {
   const response = await makeApiRequest(
     { ...options, schema: apiGetArticleResponseSchema },
     "GET",
     `article/${encodeURIComponent(options.id)}`
   )
 
-  const article = convertApiArticle(response)
+  const article = convertApiArticleWithExtraFields(response)
 
   return article
 }
@@ -88,10 +93,12 @@ type GetArticlesOptions = AuthenticatedApiRequestOptions
  * articles.forEach(article => console.log(article))
  * ```
  */
-export const getArticles = async (options: GetArticlesOptions): Promise<Array<Article>> => {
+export const getArticles = async (
+  options: GetArticlesOptions
+): Promise<Array<Article & ArticleExtraFields & ArticleCategories>> => {
   const response = await makeApiRequest({ ...options, schema: apiGetArticlesResponseSchema }, "GET", `articles`)
 
-  const articles = response.map(receivedArticle => convertApiArticle(receivedArticle))
+  const articles = response.map(receivedArticle => convertApiArticleWithCategories(receivedArticle))
 
   return articles
 }
@@ -173,7 +180,7 @@ type DeleteArticleOptions = {
  */
 export const archiveArticle = async (options: DeleteArticleOptions): Promise<Article> => {
   const response = await makeApiRequest(
-    { ...options, schema: apiCreateArticleResponseSchema },
+    { ...options, schema: apiDeleteArticleResponseSchema },
     "DELETE",
     `article/${encodeURIComponent(options.id)}`
   )

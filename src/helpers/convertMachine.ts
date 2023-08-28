@@ -1,4 +1,13 @@
 import { parseApiDate } from "helpers/apiDates"
+import {
+  ApiTray,
+  ApiTrayPositions,
+  Tray,
+  TrayPositions,
+  apiTrayPositionsSchema,
+  apiTraySchema,
+  convertApiTrayWithPositions,
+} from "helpers/convertTray"
 import { z } from "zod"
 
 export type XlAutomatenDatabaseObject = {
@@ -108,6 +117,19 @@ export type Machine = {
    */
   filledItems: number
 } & XlAutomatenDatabaseObject
+
+export type MachineTrays = {
+  /** Trays that are associated with this machine
+   *
+   * The trays also include their associated positions
+   */
+  trays: Array<Tray & TrayPositions>
+}
+
+export type MachineExtraFields = MachineTrays & {
+  /** The latest temperature that was measured */
+  latestTemperature?: number
+}
 
 /** Machine, but only the fields that can be edited */
 export type EditableMachine = Omit<
@@ -318,26 +340,39 @@ export const apiMachineSchema = z.object({
   const y: ApiMachine = undefined as unknown as z.infer<typeof apiMachineSchema>
 }
 
-export type ApiMachineListExtraFields = {
+export type ApiMachineExtraFields = {
   latest_temperature: number | null
   parameters: Array<never>
-  /** Categories that are associated with this machine */
-  trays: Array<unknown>
   coin_changer: null
 }
 
-export const apiMachineListExtraFieldsSchema = z.object({
+export const apiMachineExtraFieldsSchema = z.object({
   latest_temperature: z.number().nullable(),
   parameters: z.array(z.never()),
-  trays: z.array(z.unknown()),
   coin_changer: z.null(),
 })
 
 {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const x: z.infer<typeof apiMachineListExtraFieldsSchema> = undefined as unknown as ApiMachineListExtraFields
+  const x: z.infer<typeof apiMachineExtraFieldsSchema> = undefined as unknown as ApiMachineExtraFields
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const y: ApiMachineListExtraFields = undefined as unknown as z.infer<typeof apiMachineListExtraFieldsSchema>
+  const y: ApiMachineExtraFields = undefined as unknown as z.infer<typeof apiMachineExtraFieldsSchema>
+}
+
+export type ApiMachineTrays = {
+  /** Trays that are associated with this machine */
+  trays: Array<ApiTray & ApiTrayPositions & ApiXlAutomatenDatabaseObject>
+}
+
+export const apiMachineTraysSchema = z.object({
+  trays: z.array(apiTraySchema.and(apiTrayPositionsSchema).and(apiXlAutomatenDatabaseObjectSchema)),
+})
+
+{
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const x: z.infer<typeof apiMachineExtraFieldsSchema> = undefined as unknown as ApiMachineExtraFields
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const y: ApiMachineExtraFields = undefined as unknown as z.infer<typeof apiMachineExtraFieldsSchema>
 }
 
 type PartialOrUndefined<T> = {
@@ -448,22 +483,26 @@ export const apiGetMachineResponseSchema = apiMachineSchema.and(apiXlAutomatenDa
 }
 
 export type ApiDeleteMachineRequest = void
-export type ApiDeleteMachineResponse = ApiMachine & ApiXlAutomatenDatabaseObject
+export type ApiDeleteMachineResponse = ApiMachine & ApiXlAutomatenDatabaseObject & ApiMachineTrays
 
-export const apiDeleteMachineResponseSchema = apiMachineSchema.and(apiXlAutomatenDatabaseObjectSchema)
+export const apiDeleteMachineResponseSchema = apiMachineSchema
+  .and(apiXlAutomatenDatabaseObjectSchema)
+  .and(apiMachineTraysSchema)
 
 {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const x: z.infer<typeof apiDeleteMachineResponseSchema> = undefined as unknown as ApiGetMachineResponse
+  const x: z.infer<typeof apiDeleteMachineResponseSchema> = undefined as unknown as ApiDeleteMachineResponse
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const y: ApiDeleteMachineResponse = undefined as unknown as z.infer<typeof apiDeleteMachineResponseSchema>
 }
 
 export type ApiGetMachinesRequest = void
-export type ApiGetMachinesResponse = Array<ApiMachine & ApiXlAutomatenDatabaseObject & ApiMachineListExtraFields>
+export type ApiGetMachinesResponse = Array<
+  ApiMachine & ApiXlAutomatenDatabaseObject & ApiMachineExtraFields & ApiMachineTrays
+>
 
 export const apiGetMachinesResponseSchema = z.array(
-  apiMachineSchema.and(apiXlAutomatenDatabaseObjectSchema).and(apiMachineListExtraFieldsSchema)
+  apiMachineSchema.and(apiXlAutomatenDatabaseObjectSchema).and(apiMachineExtraFieldsSchema).and(apiMachineTraysSchema)
 )
 
 {
@@ -507,6 +546,28 @@ export const convertApiMachine = (response: MinimalApiMachineResponse): Machine 
     filledItems: response.filled_items ?? 0,
   } satisfies Machine
 
+  return result
+}
+
+export const convertApiMachineWithTrays = (
+  response: ApiMachineTrays & MinimalApiMachineResponse
+): Machine & MachineTrays => {
+  const machine = convertApiMachine(response)
+  const result = {
+    ...machine,
+    trays: response.trays.map(tray => convertApiTrayWithPositions(tray)),
+  }
+  return result
+}
+
+export const convertApiMachineWithExtraFields = (
+  response: ApiMachineExtraFields & ApiMachineTrays & MinimalApiMachineResponse
+): Machine & MachineTrays & MachineExtraFields => {
+  const machine = convertApiMachineWithTrays(response)
+  const result = {
+    ...machine,
+    trays: response.trays.map(tray => convertApiTrayWithPositions(tray)),
+  }
   return result
 }
 

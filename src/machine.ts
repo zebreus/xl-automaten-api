@@ -1,12 +1,17 @@
 import {
   EditableMachine,
   Machine,
+  MachineExtraFields,
+  MachineTrays,
   NewMachine,
   apiCreateMachineResponseSchema,
+  apiDeleteMachineResponseSchema,
   apiGetMachineResponseSchema,
   apiGetMachinesResponseSchema,
   apiUpdateMachineResponseSchema,
   convertApiMachine,
+  convertApiMachineWithExtraFields,
+  convertApiMachineWithTrays,
   convertMachineToRequest,
 } from "helpers/convertMachine"
 import { AuthenticatedApiRequestOptions, makeApiRequest } from "helpers/makeApiRequest"
@@ -88,10 +93,12 @@ type GetMachinesOptions = AuthenticatedApiRequestOptions
  * machines.forEach(machine => console.log(machine))
  * ```
  */
-export const getMachines = async (options: GetMachinesOptions): Promise<Array<Machine>> => {
+export const getMachines = async (
+  options: GetMachinesOptions
+): Promise<Array<Machine & MachineTrays & MachineExtraFields>> => {
   const response = await makeApiRequest({ ...options, schema: apiGetMachinesResponseSchema }, "GET", `machines`)
 
-  const machines = response.map(receivedMachine => convertApiMachine(receivedMachine))
+  const machines = response.map(receivedMachine => convertApiMachineWithExtraFields(receivedMachine))
 
   return machines
 }
@@ -179,14 +186,14 @@ type DeleteMachineOptions = {
  *
  * The last state of the deleted machine will be returned.
  */
-export const deleteMachine = async (options: DeleteMachineOptions): Promise<Machine> => {
+export const deleteMachine = async (options: DeleteMachineOptions): Promise<Machine & MachineTrays> => {
   const response = await makeApiRequest(
-    { ...options, schema: apiCreateMachineResponseSchema },
+    { ...options, schema: apiDeleteMachineResponseSchema },
     "DELETE",
     `machine/${encodeURIComponent(options.id)}`
   )
 
-  const machine = convertApiMachine(response)
+  const machine = convertApiMachineWithTrays(response)
 
   return machine
 }

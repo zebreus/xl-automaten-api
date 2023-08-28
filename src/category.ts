@@ -9,6 +9,11 @@ import {
   convertApiCategory,
   convertCategoryToRequest,
 } from "helpers/convertCategory"
+import {
+  CategoryArticles,
+  apiDeleteCategoryResponseSchema,
+  convertApiCategoryWithArticles,
+} from "helpers/convertCategoryAvoidDependencyCycle"
 import { AuthenticatedApiRequestOptions, makeApiRequest } from "helpers/makeApiRequest"
 
 type CreateCategoryOptions = {
@@ -159,14 +164,14 @@ type DeleteCategoryOptions = {
  *
  * The last state of the deleted category will be returned.
  */
-export const deleteCategory = async (options: DeleteCategoryOptions): Promise<Category> => {
+export const deleteCategory = async (options: DeleteCategoryOptions): Promise<Category & CategoryArticles> => {
   const response = await makeApiRequest(
-    { ...options, schema: apiCreateCategoryResponseSchema },
+    { ...options, schema: apiDeleteCategoryResponseSchema },
     "DELETE",
     `category/${encodeURIComponent(options.id)}`
   )
 
-  const category = convertApiCategory(response)
+  const category = convertApiCategoryWithArticles(response)
 
   return category
 }

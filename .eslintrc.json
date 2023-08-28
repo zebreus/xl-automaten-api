@@ -58,6 +58,7 @@
     "import/no-amd": "error",
     "import/no-mutable-exports": "error",
     "import/no-unassigned-import": "error",
+    "import/no-cycle": "error",
     "jest/expect-expect": "off"
   },
   "settings": {

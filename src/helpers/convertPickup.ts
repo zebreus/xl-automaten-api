@@ -310,7 +310,7 @@ export const apiDeletePickupResponseSchema = apiPickupSchema.and(apiXlAutomatenD
 
 {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const x: z.infer<typeof apiDeletePickupResponseSchema> = undefined as unknown as ApiGetPickupResponse
+  const x: z.infer<typeof apiDeletePickupResponseSchema> = undefined as unknown as ApiDeletePickupResponse
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const y: ApiDeletePickupResponse = undefined as unknown as z.infer<typeof apiDeletePickupResponseSchema>
 }

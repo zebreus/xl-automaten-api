@@ -1,5 +1,5 @@
 import { parseApiDate } from "helpers/apiDates"
-import { ApiCategory, apiCategorySchema } from "helpers/convertCategory"
+import { ApiCategory, Category, apiCategorySchema, convertApiCategory } from "helpers/convertCategory"
 import { z } from "zod"
 
 export type XlAutomatenDatabaseObject = {
@@ -160,11 +160,22 @@ export type Article = {
   isLend: boolean
   /** TODO: Figure out what this means */
   activeLendings: Array<never>
+} & XlAutomatenDatabaseObject
+
+export type ArticleExtraFields = {
   /** Mastermodules that are associated with this article */
   mastermodules: Array<never>
   /** Tags that are associated with this article */
   tags: Array<never>
-} & XlAutomatenDatabaseObject
+}
+
+export type ArticleCategories = {
+  categories: Array<
+    Category & {
+      pivot: { categorizableId: number; categorizableType: "App\\Article" }
+    }
+  >
+}
 
 /** Article, but only the fields that can be edited */
 export type EditableArticle = Omit<Article, "archived" | keyof XlAutomatenDatabaseObject>
@@ -295,10 +306,6 @@ export type ApiArticle = {
   lend_data: null
   /** TODO: Figure out what this means */
   active_lendings: Array<never>
-  /** Mastermodules that are associated with this article */
-  mastermodules: Array<never>
-  /** Tags that are associated with this article */
-  tags: Array<never>
 }
 
 export const apiArticleSchema = z.object({
@@ -342,8 +349,6 @@ export const apiArticleSchema = z.object({
   is_lend: z.boolean(),
   lend_data: z.null(),
   active_lendings: z.array(z.never()),
-  mastermodules: z.array(z.never()),
-  tags: z.array(z.never()),
 })
 
 {
@@ -388,6 +393,25 @@ export const apiArticleCategoriesSchema = z.object({
   const y: ApiArticleCategories = undefined as unknown as z.infer<typeof apiArticleCategoriesSchema>
 }
 
+export type ApiArticleExtraFields = {
+  /** Mastermodules that are associated with this article */
+  mastermodules: Array<never>
+  /** Tags that are associated with this article */
+  tags: Array<never>
+}
+
+export const apiArticleExtraFieldsSchema = z.object({
+  mastermodules: z.array(z.never()),
+  tags: z.array(z.never()),
+})
+
+{
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const x: z.infer<typeof apiArticleExtraFieldsSchema> = undefined as unknown as ApiArticleExtraFields
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const y: ApiArticleExtraFields = undefined as unknown as z.infer<typeof apiArticleExtraFieldsSchema>
+}
+
 type PartialOrUndefined<T> = {
   [P in keyof T]?: T[P] | undefined
 }
@@ -404,7 +428,7 @@ const fieldsWithoutDefaultMap = fieldsRequiredForCreate.reduce(
   {} as Record<FieldsRequiredForCreate, true>
 )
 
-const fieldsThatAreReadOnly = ["archived"] as const
+const fieldsThatAreReadOnly = ["archived", "lend_data", "active_lendings"] as const
 type FieldsThatAreReadOnly = (typeof fieldsThatAreReadOnly)[number]
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 const fieldsThatAreReadOnlyMap = fieldsThatAreReadOnly.reduce(
@@ -466,9 +490,11 @@ export const apiUpdateArticleResponseSchema = apiArticleSchema.and(apiXlAutomate
 }
 
 export type ApiGetArticleRequest = void
-export type ApiGetArticleResponse = ApiArticle & ApiXlAutomatenDatabaseObject
+export type ApiGetArticleResponse = ApiArticle & ApiXlAutomatenDatabaseObject & ApiArticleExtraFields
 
-export const apiGetArticleResponseSchema = apiArticleSchema.and(apiXlAutomatenDatabaseObjectSchema)
+export const apiGetArticleResponseSchema = apiArticleSchema
+  .and(apiXlAutomatenDatabaseObjectSchema)
+  .and(apiArticleExtraFieldsSchema)
 
 {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -478,24 +504,27 @@ export const apiGetArticleResponseSchema = apiArticleSchema.and(apiXlAutomatenDa
 }
 
 export type ApiDeleteArticleRequest = void
-export type ApiDeleteArticleResponse = Omit<ApiArticle, "mastermodules" | "tags"> & ApiXlAutomatenDatabaseObject
+export type ApiDeleteArticleResponse = ApiArticle & ApiXlAutomatenDatabaseObject
 
-export const apiDeleteArticleResponseSchema = apiArticleSchema
-  .omit({ mastermodules: true, tags: true })
-  .and(apiXlAutomatenDatabaseObjectSchema)
+export const apiDeleteArticleResponseSchema = apiArticleSchema.and(apiXlAutomatenDatabaseObjectSchema)
 
 {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const x: z.infer<typeof apiDeleteArticleResponseSchema> = undefined as unknown as ApiGetArticleResponse
+  const x: z.infer<typeof apiDeleteArticleResponseSchema> = undefined as unknown as ApiDeleteArticleResponse
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const y: ApiDeleteArticleResponse = undefined as unknown as z.infer<typeof apiDeleteArticleResponseSchema>
 }
 
 export type ApiGetArticlesRequest = void
-export type ApiGetArticlesResponse = Array<ApiArticle & ApiXlAutomatenDatabaseObject & ApiArticleCategories>
+export type ApiGetArticlesResponse = Array<
+  ApiArticle & ApiXlAutomatenDatabaseObject & ApiArticleExtraFields & ApiArticleCategories
+>
 
 export const apiGetArticlesResponseSchema = z.array(
-  apiArticleSchema.and(apiXlAutomatenDatabaseObjectSchema).and(apiArticleCategoriesSchema)
+  apiArticleSchema
+    .and(apiXlAutomatenDatabaseObjectSchema)
+    .and(apiArticleExtraFieldsSchema)
+    .and(apiArticleCategoriesSchema)
 )
 
 {
@@ -543,12 +572,41 @@ export const convertApiArticle = (response: MinimalApiArticleResponse): Article 
     isHandover: response.is_handover === 1 ? true : false,
     isLend: response.is_lend,
     activeLendings: response.active_lendings ?? [],
-    mastermodules: response.mastermodules ?? [],
-    tags: response.tags ?? [],
     updatedAt: parseApiDate(response.updated_at),
     createdAt: parseApiDate(response.created_at),
     id: response.id,
   } satisfies Article
+
+  return result
+}
+
+export const convertApiArticleWithExtraFields = (
+  response: ApiArticleExtraFields & MinimalApiArticleResponse
+): Article & ArticleExtraFields => {
+  const article = convertApiArticle(response)
+  const result = {
+    ...article,
+    mastermodules: response.mastermodules ?? [],
+    tags: response.tags ?? [],
+  }
+
+  return result
+}
+
+export const convertApiArticleWithCategories = (
+  response: ApiArticleCategories & ApiArticleExtraFields & MinimalApiArticleResponse
+): Article & ArticleExtraFields & ArticleCategories => {
+  const article = convertApiArticleWithExtraFields(response)
+  const result = {
+    ...article,
+    categories: response.categories.map(category => ({
+      ...convertApiCategory(category),
+      pivot: {
+        categorizableId: category.pivot.categorizable_id,
+        categorizableType: category.pivot.categorizable_type,
+      },
+    })),
+  }
 
   return result
 }

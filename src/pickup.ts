@@ -4,6 +4,7 @@ import {
   Pickup,
   UpdatePickup,
   apiCreatePickupResponseSchema,
+  apiDeletePickupResponseSchema,
   apiGetPickupResponseSchema,
   apiGetPickupsResponseSchema,
   apiUpdatePickupResponseSchema,
@@ -127,7 +128,7 @@ type DeletePickupOptions = {
  */
 export const deletePickup = async (options: DeletePickupOptions): Promise<Pickup> => {
   const response = await makeApiRequest(
-    { ...options, schema: apiCreatePickupResponseSchema },
+    { ...options, schema: apiDeletePickupResponseSchema },
     "DELETE",
     `pickupcode/${encodeURIComponent(options.code)}`
   )

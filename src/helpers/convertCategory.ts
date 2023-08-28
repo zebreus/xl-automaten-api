@@ -148,18 +148,6 @@ export const apiGetCategoryResponseSchema = apiCategorySchema.and(apiXlAutomaten
   const y: ApiGetCategoryResponse = undefined as unknown as z.infer<typeof apiGetCategoryResponseSchema>
 }
 
-export type ApiDeleteCategoryRequest = void
-export type ApiDeleteCategoryResponse = ApiCategory & ApiXlAutomatenDatabaseObject
-
-export const apiDeleteCategoryResponseSchema = apiCategorySchema.and(apiXlAutomatenDatabaseObjectSchema)
-
-{
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const x: z.infer<typeof apiDeleteCategoryResponseSchema> = undefined as unknown as ApiGetCategoryResponse
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const y: ApiDeleteCategoryResponse = undefined as unknown as z.infer<typeof apiDeleteCategoryResponseSchema>
-}
-
 export type ApiGetCategoriesRequest = void
 export type ApiGetCategoriesResponse = Array<ApiCategory & ApiXlAutomatenDatabaseObject>
 
