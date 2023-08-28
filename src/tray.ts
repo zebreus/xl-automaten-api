@@ -19,21 +19,23 @@ type CreateTrayOptions = {
   tray: NewTray
 } & AuthenticatedApiRequestOptions
 
-/** Create a new tray code
+/** Create a new tray for a machine
  *
  * ```typescript
  * const tray = await createTray({
  *   tray: {
- *     name: "name-of-the-new-tray"
- *     number: "123456",
- *     price: 4,
- *     supplierId: supplierId,
+ *     machineId: 10, // ID of an existing machine
+ *     slot: 2, // Between 1 and 18
+ *     mountingPosition: 72, // Integer up to 5 digits long
+ *     type: 1,
  *   },
  *   token: "your-token",
  * })
  *
  * console.log(tray)
  * ```
+ *
+ * Combination of `machineId` and `slot` needs to be unique.
  *
  * The new tray will be returned.
  */
@@ -102,10 +104,7 @@ export const getTrays = async (options: GetTraysOptions): Promise<Array<Tray & T
 type UpdateTrayOptions = {
   /** ID of the tray */
   id: number
-  /** New data
-   *
-   * Needs to include all fields that are required when creating a new tray.
-   */
+  /** New data */
   tray: Partial<EditableTray>
 } & AuthenticatedApiRequestOptions
 
@@ -115,7 +114,10 @@ type UpdateTrayOptions = {
  * const tray = await updateTray({
  *   id: 2000, // ID of an existing tray
  *   tray: {
- *     name: "New name of the tray"
+ *     machineId: 10, // ID of any machine
+ *     slot: 2, // Between 1 and 18
+ *     mountingPosition: 72, // Integer up to 5 digits long
+ *     type: 1,
  *   },
  *   token: "your-token",
  * })
@@ -155,7 +157,7 @@ export const updateTray = async (options: UpdateTrayOptions): Promise<Tray> => {
 }
 
 type DeleteTrayOptions = {
-  /** id of the tray you want to retrieve */
+  /** ID of the tray you want to delete */
   id: number
 } & AuthenticatedApiRequestOptions
 

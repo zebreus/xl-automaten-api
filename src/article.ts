@@ -29,7 +29,7 @@ type CreateArticleOptions = {
  *     name: "name-of-the-new-article"
  *     number: "123456",
  *     price: 4,
- *     supplierId: supplierId,
+ *     supplierId: 29, // ID of an existing supplier
  *   },
  *   token: "your-token",
  * })
@@ -106,10 +106,7 @@ export const getArticles = async (
 type UpdateArticleOptions = {
   /** ID of the article */
   id: number
-  /** New data
-   *
-   * Needs to include all fields that are required when creating a new article.
-   */
+  /** The updated fields */
   article: Partial<EditableArticle>
 } & AuthenticatedApiRequestOptions
 
@@ -159,7 +156,7 @@ export const updateArticle = async (options: UpdateArticleOptions): Promise<Arti
 }
 
 type DeleteArticleOptions = {
-  /** id of the article you want to retrieve */
+  /** ID of the article you want to delete */
   id: number
 } & AuthenticatedApiRequestOptions
 
@@ -174,9 +171,9 @@ type DeleteArticleOptions = {
  * console.log(article)
  * ```
  *
- * The last state of the deleted article will be returned.
+ * The last state of the archived article will be returned.
  *
- * Articles are not really getting deleted. The only thing this does is setting archived to true.
+ * Articles are not really getting deleted. The only thing this does is setting `archived` to true.
  */
 export const archiveArticle = async (options: DeleteArticleOptions): Promise<Article> => {
   const response = await makeApiRequest(

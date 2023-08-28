@@ -22,10 +22,9 @@ type CreatePositionOptions = {
  * ```typescript
  * const position = await createPosition({
  *   position: {
- *     name: "name-of-the-new-position"
- *     number: "123456",
- *     price: 4,
- *     supplierId: supplierId,
+ *     trayId: 2343,
+ *     number: 2, // Combination of trayId and number must be unique
+ *     width: 2,
  *   },
  *   token: "your-token",
  * })
@@ -34,6 +33,8 @@ type CreatePositionOptions = {
  * ```
  *
  * The new position will be returned.
+ *
+ * The combination of trayId and number must be unique.
  */
 export const createPosition = async (options: CreatePositionOptions): Promise<Position> => {
   const requestBody = convertPositionToRequest(options.position)
@@ -100,20 +101,19 @@ export const getPositions = async (options: GetPositionsOptions): Promise<Array<
 type UpdatePositionOptions = {
   /** ID of the position */
   id: number
-  /** New data
-   *
-   * Needs to include all fields that are required when creating a new position.
-   */
+  /** All fields that should get updated */
   position: Partial<EditablePosition>
 } & AuthenticatedApiRequestOptions
 
 /** Update an existing position
  *
+ * You can only edit the width of a position.
+ *
  * ```typescript
  * const position = await updatePosition({
  *   id: 2000, // ID of an existing position
  *   position: {
- *     name: "New name of the position"
+ *     width: 2
  *   },
  *   token: "your-token",
  * })
@@ -141,7 +141,7 @@ export const updatePosition = async (options: UpdatePositionOptions): Promise<Po
 }
 
 type DeletePositionOptions = {
-  /** id of the position you want to retrieve */
+  /** ID of the position you want to delete */
   id: number
 } & AuthenticatedApiRequestOptions
 

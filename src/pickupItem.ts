@@ -15,15 +15,14 @@ type CreatePickupItemOptions = {
   pickupItem: NewPickupItem
 } & AuthenticatedApiRequestOptions
 
-/** Create a new pickupItem code
+/** Add a item to a pickup
  *
  * ```typescript
  * const pickupItem = await createPickupItem({
  *   pickupItem: {
- *     name: "name-of-the-new-pickupitem"
- *     number: "123456",
- *     price: 4,
- *     supplierId: supplierId,
+ *     pickupId, // ID of an existing pickup
+ *     articleId, // ID of an existing article
+ *     overrideArticlePrice: 3, // Use this price instead of the price of the article
  *   },
  *   token: "your-token",
  * })
@@ -91,7 +90,7 @@ export const updatePickupItem = async (options: UpdatePickupItemOptions): Promis
 }
 
 type DeletePickupItemOptions = {
-  /** id of the pickupItem you want to retrieve */
+  /** ID of the pickupItem you want to delete */
   id: number
 } & AuthenticatedApiRequestOptions
 

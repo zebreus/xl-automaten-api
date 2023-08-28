@@ -147,7 +147,7 @@ export const updateCategory = async (options: UpdateCategoryOptions): Promise<Ca
 }
 
 type DeleteCategoryOptions = {
-  /** id of the category you want to retrieve */
+  /** ID of the category you want to delete */
   id: number
 } & AuthenticatedApiRequestOptions
 

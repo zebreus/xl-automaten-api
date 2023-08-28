@@ -17,19 +17,24 @@ import {
 import { AuthenticatedApiRequestOptions, makeApiRequest } from "helpers/makeApiRequest"
 
 type CreateMachineOptions = {
-  /** Data of the new machine */
+  /** The new machine */
   machine: NewMachine
 } & AuthenticatedApiRequestOptions
 
-/** Create a new machine code
+/** Create a new machine
  *
  * ```typescript
  * const machine = await createMachine({
  *   machine: {
- *     name: "name-of-the-new-machine"
- *     number: "123456",
- *     price: 4,
- *     supplierId: supplierId,
+ *     name: "Name of the machine",
+ *     displayName: "Displayed to the user",
+ *     serialNumber: "123456",
+ *     place: "Where the machine is located",
+ *     testMode: true,
+ *     tempStopTemp: 8,
+ *     tempStopTime: 45,
+ *     tempWarningTemp: 12,
+ *     tempWarningTime: 30,
  *   },
  *   token: "your-token",
  * })
@@ -54,11 +59,11 @@ export const createMachine = async (options: CreateMachineOptions): Promise<Mach
 }
 
 type GetMachineOptions = {
-  /** id of the machine you want to retrieve */
+  /** ID of the machine you want to retrieve */
   id: number
 } & AuthenticatedApiRequestOptions
 
-/** Get a machine by its id
+/** Get a machine by its ID
  *
  * ```typescript
  * const machine = await getMachine({
@@ -106,10 +111,7 @@ export const getMachines = async (
 type UpdateMachineOptions = {
   /** ID of the machine */
   id: number
-  /** New data
-   *
-   * Needs to include all fields that are required when creating a new machine.
-   */
+  /** Updates to the machine */
   machine: Partial<EditableMachine>
 } & AuthenticatedApiRequestOptions
 
@@ -169,7 +171,7 @@ export const updateMachine = async (options: UpdateMachineOptions): Promise<Mach
 }
 
 type DeleteMachineOptions = {
-  /** id of the machine you want to retrieve */
+  /** ID of the machine you want to delete */
   id: number
 } & AuthenticatedApiRequestOptions
 

@@ -22,10 +22,8 @@ type CreateSupplierOptions = {
  * ```typescript
  * const supplier = await createSupplier({
  *   supplier: {
- *     name: "name-of-the-new-supplier"
- *     number: "123456",
- *     price: 4,
- *     supplierId: supplierId,
+ *     name: "Name of the supplier",
+ *     email: "email-of-the-supplier@test.com",
  *   },
  *   token: "your-token",
  * })
@@ -102,10 +100,7 @@ export const getSupplier = async (options: GetSupplierOptions): Promise<Supplier
 type UpdateSupplierOptions = {
   /** ID of the supplier */
   id: number
-  /** New data
-   *
-   * Needs to include all fields that are required when creating a new supplier.
-   */
+  /** New data */
   supplier: Partial<EditableSupplier>
 } & AuthenticatedApiRequestOptions
 
@@ -115,7 +110,8 @@ type UpdateSupplierOptions = {
  * const supplier = await updateSupplier({
  *   id: 2000, // ID of an existing supplier
  *   supplier: {
- *     name: "New name of the supplier"
+ *     name: "New name of the supplier",
+ *     email: "new-email-of-the-supplier@test.com"
  *   },
  *   token: "your-token",
  * })
@@ -149,7 +145,7 @@ export const updateSupplier = async (options: UpdateSupplierOptions): Promise<Su
 }
 
 type DeleteSupplierOptions = {
-  /** id of the supplier you want to retrieve */
+  /** ID of the supplier you want to delete */
   id: number
 } & AuthenticatedApiRequestOptions
 

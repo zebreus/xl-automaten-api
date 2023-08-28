@@ -66,7 +66,7 @@ type UpdatePickupOptions = {
  * const pickup = await updatePickup({
  *   code: "code-of-an-existing-pickup",
  *   pickup: {
- *     callback:
+ *     callback: "https://example.com/pickup-callback",
  *   },
  *   token: "your-token",
  * })
