@@ -3,7 +3,8 @@ import { PickupItem } from "helpers/convertPickupItem"
 import { login } from "login"
 import { createPickup, deletePickup } from "pickup"
 import { createPickupItem, deletePickupItem, updatePickupItem } from "pickupItem"
-import { email, mastermoduleId, password, supplierId } from "tests/login"
+import { createSupplier, deleteSupplier } from "supplier"
+import { email, mastermoduleId, password } from "tests/login"
 
 let token = ""
 
@@ -22,6 +23,25 @@ const getToken = async () => {
 const generatePickupCode = () => {
   const id = Math.random().toString(36).substring(7)
   return id
+}
+
+const supplierIdsToDeleteAfterwards: Array<number> = []
+
+const getSupplierId = async () => {
+  if (supplierIdsToDeleteAfterwards[0]) {
+    return supplierIdsToDeleteAfterwards[0]
+  }
+  const token = await getToken()
+  const supplier = await createSupplier({
+    token,
+    supplier: {
+      name: "Test Supplier",
+      email: "test@example.com",
+    },
+  })
+
+  supplierIdsToDeleteAfterwards.push(supplier.id)
+  return supplier.id
 }
 
 const pickupCodesToDeleteAfterwards: Array<[string, number]> = []
@@ -53,6 +73,7 @@ const getArticleId = async () => {
   }
   const token = await getToken()
   const articles = await getArticles({ token })
+  const supplierId = await getSupplierId()
   const firstArticle = articles[0]
   if (firstArticle) {
     testArticle = firstArticle.id
@@ -102,6 +123,16 @@ afterAll(async () => {
     try {
       await deletePickup({
         code: code[0],
+        token,
+      })
+    } catch (e) {
+      // Ignore errors
+    }
+  }
+  for (const id of supplierIdsToDeleteAfterwards) {
+    try {
+      await deleteSupplier({
+        id,
         token,
       })
     } catch (e) {

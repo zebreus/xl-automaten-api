@@ -1,7 +1,8 @@
 import { archiveArticle, createArticle, getArticle, getArticles, updateArticle } from "article"
 import { Article } from "helpers/convertArticle"
 import { login } from "login"
-import { email, password, supplierId } from "tests/login"
+import { createSupplier, deleteSupplier } from "supplier"
+import { email, password } from "tests/login"
 
 let token = ""
 
@@ -15,6 +16,25 @@ const getToken = async () => {
   })
   token = result.token
   return result.token
+}
+
+const supplierIdsToDeleteAfterwards: Array<number> = []
+
+const getSupplierId = async () => {
+  if (supplierIdsToDeleteAfterwards[0]) {
+    return supplierIdsToDeleteAfterwards[0]
+  }
+  const token = await getToken()
+  const supplier = await createSupplier({
+    token,
+    supplier: {
+      name: "Test Supplier",
+      email: "test@example.com",
+    },
+  })
+
+  supplierIdsToDeleteAfterwards.push(supplier.id)
+  return supplier.id
 }
 
 const articlesToDeleteAfterwards: Array<number> = []
@@ -42,6 +62,16 @@ afterAll(async () => {
       // Ignore errors
     }
   }
+  for (const id of supplierIdsToDeleteAfterwards) {
+    try {
+      await deleteSupplier({
+        id,
+        token,
+      })
+    } catch (e) {
+      // Ignore errors
+    }
+  }
 })
 
 test("Create article seems to work", async () => {
@@ -52,7 +82,7 @@ test("Create article seems to work", async () => {
         name: "test-article",
         number: "123456",
         price: 4,
-        supplierId: supplierId,
+        supplierId: await getSupplierId(),
       },
       token,
     })
@@ -70,7 +100,7 @@ test("Creating two articles with the same name works", async () => {
         name: "test-article",
         number: "123456",
         price: 4,
-        supplierId: supplierId,
+        supplierId: await getSupplierId(),
       },
       token,
     })
@@ -83,7 +113,7 @@ test("Creating two articles with the same name works", async () => {
           name: "test-article",
           number: "123456",
           price: 4,
-          supplierId: supplierId,
+          supplierId: await getSupplierId(),
         },
         token,
       })
@@ -100,7 +130,7 @@ test("Get article seems to work", async () => {
         name: "test-article",
         number: "123456",
         price: 4,
-        supplierId: supplierId,
+        supplierId: await getSupplierId(),
       },
       token,
     })
@@ -133,7 +163,7 @@ test("Archiving an article seems to work", async () => {
         name: "test-article",
         number: "123456",
         price: 4,
-        supplierId: supplierId,
+        supplierId: await getSupplierId(),
       },
       token,
     })
@@ -186,7 +216,7 @@ test("Update article seems to work", async () => {
         name: "test-article",
         number: "123456",
         price: 4,
-        supplierId: supplierId,
+        supplierId: await getSupplierId(),
         description: "old description",
       },
       token,
@@ -222,7 +252,7 @@ test("List articles seems to work", async () => {
         name: "list test alpha",
         number: "123456",
         price: 4,
-        supplierId: supplierId,
+        supplierId: await getSupplierId(),
       },
       token,
     })
@@ -234,7 +264,7 @@ test("List articles seems to work", async () => {
         name: "list test beta",
         number: "123456",
         price: 4,
-        supplierId: supplierId,
+        supplierId: await getSupplierId(),
       },
       token,
     })
@@ -257,7 +287,7 @@ test("List articles seems to work", async () => {
 //         name: "archive-test-" + id,
 //         number: "123456",
 //         price: 4,
-//         supplierId: supplierId,
+//         supplierId: await getSupplierId(),
 //       },
 //       token,
 //     })
