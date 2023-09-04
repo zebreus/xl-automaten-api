@@ -26,11 +26,13 @@ export type ApiXlAutomatenDatabaseObject = {
   id: number
 }
 
-export const apiXlAutomatenDatabaseObjectSchema = z.object({
-  updated_at: z.string(),
-  created_at: z.string(),
-  id: z.number(),
-})
+export const apiXlAutomatenDatabaseObjectSchema = z
+  .object({
+    updated_at: z.string(),
+    created_at: z.string(),
+    id: z.number(),
+  })
+  .strict()
 
 {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars

@@ -220,3 +220,11 @@ test("List categories seems to work", async () => {
   expect(categories.find(p => p.name === categoryA.name)).toBeDefined()
   expect(categories.find(p => p.name === categoryB.name)).toBeDefined()
 })
+
+test("List categories does not crash", async () => {
+  const token = await getToken()
+
+  const categories = await getCategories({ token })
+
+  expect(categories.length).toBeGreaterThanOrEqual(0)
+})

@@ -325,3 +325,11 @@ test("List positions seems to work", async () => {
   expect(positions.find(p => p.trayId === positionA.trayId && p.number === positionA.number)).toBeDefined()
   expect(positions.find(p => p.trayId === positionB.trayId && p.number === positionB.number)).toBeDefined()
 })
+
+test("List positions does not crash", async () => {
+  const token = await getToken()
+
+  const positions = await getPositions({ token })
+
+  expect(positions.length).toBeGreaterThanOrEqual(0)
+})

@@ -277,6 +277,14 @@ test("List articles seems to work", async () => {
   expect(articles.find(p => p.name === articleB.name)).toBeDefined()
 })
 
+test("List articles does not crash", async () => {
+  const token = await getToken()
+
+  const articles = await getArticles({ token })
+
+  expect(articles.length).toBeGreaterThanOrEqual(1)
+})
+
 // eslint-disable-next-line jest/no-commented-out-tests
 // test("Archiving an article hides it from the list", async () => {
 //   const token = await getToken()

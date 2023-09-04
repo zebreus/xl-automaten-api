@@ -1,3 +1,4 @@
+import { parseApiDate } from "helpers/apiDates"
 import {
   ApiXlAutomatenDatabaseObject,
   XlAutomatenDatabaseObject,
@@ -27,10 +28,15 @@ export type PickupItem = {
    * Readonly
    */
   saleId?: number
+  /** When the item was dispensed
+   *
+   * Readonly
+   */
+  dispensed?: Date
 } & XlAutomatenDatabaseObject
 
 /** PickupItem, but only the fields that can be edited */
-export type EditablePickupItem = Omit<PickupItem, keyof XlAutomatenDatabaseObject | "saleId" | "pickupId">
+export type EditablePickupItem = Omit<PickupItem, keyof XlAutomatenDatabaseObject | "saleId" | "pickupId" | "dispensed">
 
 /** Data of a new pickupitem
  *
@@ -47,11 +53,11 @@ export type ApiPickupItem = {
   pickup_code_id: number
   /** ID of the article represented by this item */
   article_id: number
-  /** TODO: Find out what this means
+  /** When the item was dispensed
    *
    * Readonly
    */
-  dispensed: null
+  dispensed: string | null
   /** Override the price specified in the associated article
    *
    * 1 = Use price field of this item
@@ -71,14 +77,16 @@ export type ApiPickupItem = {
   sale_id: number | null
 }
 
-export const apiPickupItemSchema = z.object({
-  pickup_code_id: z.number(),
-  article_id: z.number(),
-  dispensed: z.null(),
-  fixed_price: z.literal(0).or(z.literal(1)),
-  price: z.number(),
-  sale_id: z.number().nullable(),
-})
+export const apiPickupItemSchema = z
+  .object({
+    pickup_code_id: z.number(),
+    article_id: z.number(),
+    dispensed: z.string().nullable(),
+    fixed_price: z.literal(0).or(z.literal(1)),
+    price: z.number(),
+    sale_id: z.number().nullable(),
+  })
+  .strict()
 
 {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -122,7 +130,7 @@ export type MinimalApiPickupItemResponse = Required<Pick<ApiPickupItem, FieldsTh
 export const minimalPickupItemResponseSchema = apiPickupItemSchema
   .partial()
   .required(fieldsThatWillAlwaysGetReturnedMap)
-  .and(apiXlAutomatenDatabaseObjectSchema)
+  .merge(apiXlAutomatenDatabaseObjectSchema)
 
 export type ApiCreatePickupItemRequest = Required<Pick<ApiPickupItem, FieldsRequiredForCreate>> & Partial<ApiPickupItem>
 export type ApiCreatePickupItemResponse = MinimalApiPickupItemResponse
@@ -142,7 +150,7 @@ export type ApiUpdatePickupItemRequest = Required<
   Partial<ApiPickupItem>
 export type ApiUpdatePickupItemResponse = ApiPickupItem & ApiXlAutomatenDatabaseObject
 
-export const apiUpdatePickupItemResponseSchema = apiPickupItemSchema.and(apiXlAutomatenDatabaseObjectSchema)
+export const apiUpdatePickupItemResponseSchema = apiPickupItemSchema.merge(apiXlAutomatenDatabaseObjectSchema)
 
 {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -154,7 +162,7 @@ export const apiUpdatePickupItemResponseSchema = apiPickupItemSchema.and(apiXlAu
 export type ApiDeletePickupItemRequest = void
 export type ApiDeletePickupItemResponse = ApiPickupItem & ApiXlAutomatenDatabaseObject
 
-export const apiDeletePickupItemResponseSchema = apiPickupItemSchema.and(apiXlAutomatenDatabaseObjectSchema)
+export const apiDeletePickupItemResponseSchema = apiPickupItemSchema.merge(apiXlAutomatenDatabaseObjectSchema)
 
 {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -166,7 +174,7 @@ export const apiDeletePickupItemResponseSchema = apiPickupItemSchema.and(apiXlAu
 export type ApiGetPickupItemsRequest = void
 export type ApiGetPickupItemsResponse = Array<ApiPickupItem & ApiXlAutomatenDatabaseObject>
 
-export const apiGetPickupItemsResponseSchema = z.array(apiPickupItemSchema.and(apiXlAutomatenDatabaseObjectSchema))
+export const apiGetPickupItemsResponseSchema = z.array(apiPickupItemSchema.merge(apiXlAutomatenDatabaseObjectSchema))
 
 {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -181,6 +189,7 @@ export const convertApiPickupItem = (response: MinimalApiPickupItemResponse): Pi
     pickupId: response.pickup_code_id,
     articleId: response.article_id,
     overrideArticlePrice: response.fixed_price == 1 ? response.price : undefined,
+    ...(response.dispensed != null ? { dispensed: parseApiDate(response.dispensed) } : {}),
     ...(response.sale_id != null ? { saleId: response.sale_id } : {}),
   } satisfies PickupItem
 

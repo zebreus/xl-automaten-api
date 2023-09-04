@@ -342,7 +342,7 @@ export type ApiArticleCategories = {
 
 export const apiArticleCategoriesSchema = z.object({
   categories: z.array(
-    apiCategorySchema.and(apiXlAutomatenDatabaseObjectSchema).and(
+    apiCategorySchema.merge(apiXlAutomatenDatabaseObjectSchema).merge(
       z.object({
         pivot: z.object({
           categorizable_id: z.number(),
@@ -430,7 +430,7 @@ export type MinimalApiArticleResponse = Required<Pick<ApiArticle, FieldsThatWill
 export const minimalArticleResponseSchema = apiArticleSchema
   .partial()
   .required(fieldsThatWillAlwaysGetReturnedMap)
-  .and(apiXlAutomatenDatabaseObjectSchema)
+  .merge(apiXlAutomatenDatabaseObjectSchema)
 
 export type ApiCreateArticleRequest = Required<Pick<Omit<ApiArticle, FieldsThatAreReadOnly>, FieldsRequiredForCreate>> &
   Partial<ApiArticle>
@@ -448,7 +448,7 @@ export const apiCreateArticleResponseSchema = minimalArticleResponseSchema
 export type ApiUpdateArticleRequest = ApiCreateArticleRequest
 export type ApiUpdateArticleResponse = ApiArticle & ApiXlAutomatenDatabaseObject
 
-export const apiUpdateArticleResponseSchema = apiArticleSchema.and(apiXlAutomatenDatabaseObjectSchema)
+export const apiUpdateArticleResponseSchema = apiArticleSchema.merge(apiXlAutomatenDatabaseObjectSchema)
 
 {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -461,8 +461,8 @@ export type ApiGetArticleRequest = void
 export type ApiGetArticleResponse = ApiArticle & ApiXlAutomatenDatabaseObject & ApiArticleExtraFields
 
 export const apiGetArticleResponseSchema = apiArticleSchema
-  .and(apiXlAutomatenDatabaseObjectSchema)
-  .and(apiArticleExtraFieldsSchema)
+  .merge(apiXlAutomatenDatabaseObjectSchema)
+  .merge(apiArticleExtraFieldsSchema)
 
 {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -474,7 +474,7 @@ export const apiGetArticleResponseSchema = apiArticleSchema
 export type ApiDeleteArticleRequest = void
 export type ApiDeleteArticleResponse = ApiArticle & ApiXlAutomatenDatabaseObject
 
-export const apiDeleteArticleResponseSchema = apiArticleSchema.and(apiXlAutomatenDatabaseObjectSchema)
+export const apiDeleteArticleResponseSchema = apiArticleSchema.merge(apiXlAutomatenDatabaseObjectSchema)
 
 {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -490,9 +490,9 @@ export type ApiGetArticlesResponse = Array<
 
 export const apiGetArticlesResponseSchema = z.array(
   apiArticleSchema
-    .and(apiXlAutomatenDatabaseObjectSchema)
-    .and(apiArticleExtraFieldsSchema)
-    .and(apiArticleCategoriesSchema)
+    .merge(apiXlAutomatenDatabaseObjectSchema)
+    .merge(apiArticleExtraFieldsSchema)
+    .merge(apiArticleCategoriesSchema)
 )
 
 {

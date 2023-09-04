@@ -240,3 +240,11 @@ test("List pickups seems to work", async () => {
   expect(pickups.find(p => p.code === codeA)).toBeDefined()
   expect(pickups.find(p => p.code === codeB)).toBeDefined()
 })
+
+test("List pickups does not crash", async () => {
+  const token = await getToken()
+
+  const pickups = await getPickups({ token })
+
+  expect(pickups.length).toBeGreaterThanOrEqual(0)
+})

@@ -230,3 +230,11 @@ test("List suppliers seems to work", async () => {
   expect(suppliers.find(p => p.name === supplierA.name)).toBeDefined()
   expect(suppliers.find(p => p.name === supplierB.name)).toBeDefined()
 })
+
+test("List suppliers does not crash", async () => {
+  const token = await getToken()
+
+  const suppliers = await getSuppliers({ token })
+
+  expect(suppliers.length).toBeGreaterThanOrEqual(0)
+})

@@ -66,31 +66,33 @@ export type ApiTray = {
   position: null
 }
 
-export const apiTraySchema = z.object({
-  machine_id: z.number(),
-  type: z.literal(1).or(z.literal(2)).or(z.literal(3)),
-  mounting_position: z.number(),
-  slot: z
-    .literal(1)
-    .or(z.literal(2))
-    .or(z.literal(3))
-    .or(z.literal(4))
-    .or(z.literal(5))
-    .or(z.literal(6))
-    .or(z.literal(7))
-    .or(z.literal(8))
-    .or(z.literal(9))
-    .or(z.literal(10))
-    .or(z.literal(11))
-    .or(z.literal(12))
-    .or(z.literal(13))
-    .or(z.literal(14))
-    .or(z.literal(15))
-    .or(z.literal(16))
-    .or(z.literal(17))
-    .or(z.literal(18)),
-  position: z.null(),
-})
+export const apiTraySchema = z
+  .object({
+    machine_id: z.number(),
+    type: z.literal(1).or(z.literal(2)).or(z.literal(3)),
+    mounting_position: z.number(),
+    slot: z
+      .literal(1)
+      .or(z.literal(2))
+      .or(z.literal(3))
+      .or(z.literal(4))
+      .or(z.literal(5))
+      .or(z.literal(6))
+      .or(z.literal(7))
+      .or(z.literal(8))
+      .or(z.literal(9))
+      .or(z.literal(10))
+      .or(z.literal(11))
+      .or(z.literal(12))
+      .or(z.literal(13))
+      .or(z.literal(14))
+      .or(z.literal(15))
+      .or(z.literal(16))
+      .or(z.literal(17))
+      .or(z.literal(18)),
+    position: z.null(),
+  })
+  .strict()
 
 {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -104,9 +106,11 @@ export type ApiTrayPositions = {
   positions: Array<ApiPosition & ApiXlAutomatenDatabaseObject>
 }
 
-export const apiTrayPositionsSchema = z.object({
-  positions: z.array(apiPositionSchema.and(apiXlAutomatenDatabaseObjectSchema)),
-})
+export const apiTrayPositionsSchema = z
+  .object({
+    positions: z.array(apiPositionSchema.merge(apiXlAutomatenDatabaseObjectSchema).strict()),
+  })
+  .strict()
 
 {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -150,7 +154,7 @@ export type MinimalApiTrayResponse = Required<Pick<ApiTray, FieldsThatWillAlways
 export const minimalTrayResponseSchema = apiTraySchema
   .partial()
   .required(fieldsThatWillAlwaysGetReturnedMap)
-  .and(apiXlAutomatenDatabaseObjectSchema)
+  .merge(apiXlAutomatenDatabaseObjectSchema)
 
 export type ApiCreateTrayRequest = Required<Pick<ApiTray, FieldsRequiredForCreate>> & Partial<ApiTray>
 export type ApiCreateTrayResponse = MinimalApiTrayResponse
@@ -168,7 +172,7 @@ export type ApiUpdateTrayRequest = Required<Omit<Pick<ApiTray, FieldsRequiredFor
   Partial<ApiTray>
 export type ApiUpdateTrayResponse = ApiTray & ApiXlAutomatenDatabaseObject
 
-export const apiUpdateTrayResponseSchema = apiTraySchema.and(apiXlAutomatenDatabaseObjectSchema)
+export const apiUpdateTrayResponseSchema = apiTraySchema.merge(apiXlAutomatenDatabaseObjectSchema)
 
 {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -180,7 +184,7 @@ export const apiUpdateTrayResponseSchema = apiTraySchema.and(apiXlAutomatenDatab
 export type ApiGetTrayRequest = void
 export type ApiGetTrayResponse = ApiTray & ApiXlAutomatenDatabaseObject
 
-export const apiGetTrayResponseSchema = apiTraySchema.and(apiXlAutomatenDatabaseObjectSchema)
+export const apiGetTrayResponseSchema = apiTraySchema.merge(apiXlAutomatenDatabaseObjectSchema)
 
 {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -193,8 +197,8 @@ export type ApiDeleteTrayRequest = void
 export type ApiDeleteTrayResponse = ApiTray & ApiXlAutomatenDatabaseObject & ApiTrayPositions
 
 export const apiDeleteTrayResponseSchema = apiTraySchema
-  .and(apiXlAutomatenDatabaseObjectSchema)
-  .and(apiTrayPositionsSchema)
+  .merge(apiXlAutomatenDatabaseObjectSchema)
+  .merge(apiTrayPositionsSchema)
 
 {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -207,7 +211,7 @@ export type ApiGetTraysRequest = void
 export type ApiGetTraysResponse = Array<ApiTray & ApiXlAutomatenDatabaseObject & ApiTrayPositions>
 
 export const apiGetTraysResponseSchema = z.array(
-  apiTraySchema.and(apiXlAutomatenDatabaseObjectSchema).and(apiTrayPositionsSchema)
+  apiTraySchema.merge(apiXlAutomatenDatabaseObjectSchema).merge(apiTrayPositionsSchema)
 )
 
 {

@@ -83,6 +83,9 @@ export async function makeApiRequest<ExpectedResponse>(
 ) {
   const url = `${apiUrl}${endpoint}`
   const body = (method === "POST" || method === "PUT") && content ? JSON.stringify(content) : null
+  // if ((method === "POST" || method === "PUT" || method === "DELETE") && !endpoint.includes("login")) {
+  //   throw new Error("Currently preventing writes")
+  // }
   const fetchFunctionOrPromise = passedFetchFunction || defaultFetch
   const fetchFunction = await fetchFunctionOrPromise
 

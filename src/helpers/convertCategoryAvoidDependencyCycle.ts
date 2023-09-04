@@ -22,9 +22,11 @@ export type ApiCategoryArticles = {
   articles: Array<ApiArticle & ApiXlAutomatenDatabaseObject>
 }
 
-export const apiCategoryArticlesSchema = z.object({
-  articles: z.array(apiArticleSchema.and(apiXlAutomatenDatabaseObjectSchema)),
-})
+export const apiCategoryArticlesSchema = z
+  .object({
+    articles: z.array(apiArticleSchema.merge(apiXlAutomatenDatabaseObjectSchema).strict()),
+  })
+  .strict()
 
 {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -49,8 +51,8 @@ export type ApiDeleteCategoryRequest = void
 export type ApiDeleteCategoryResponse = ApiCategory & ApiXlAutomatenDatabaseObject & ApiCategoryArticles
 
 export const apiDeleteCategoryResponseSchema = apiCategorySchema
-  .and(apiXlAutomatenDatabaseObjectSchema)
-  .and(apiCategoryArticlesSchema)
+  .merge(apiXlAutomatenDatabaseObjectSchema)
+  .merge(apiCategoryArticlesSchema)
 
 {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars

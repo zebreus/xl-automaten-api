@@ -315,3 +315,11 @@ test("List trays seems to work", async () => {
   expect(trays.find(p => p.machineId === trayA.machineId && p.slot === trayA.slot)).toBeDefined()
   expect(trays.find(p => p.machineId === trayB.machineId && p.slot === trayB.slot)).toBeDefined()
 })
+
+test("List trays does not crash", async () => {
+  const token = await getToken()
+
+  const trays = await getTrays({ token })
+
+  expect(trays.length).toBeGreaterThanOrEqual(0)
+})

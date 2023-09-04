@@ -287,3 +287,11 @@ test("List machines seems to work", async () => {
   expect(machines.find(p => p.serialNumber === machineA.serialNumber)).toBeDefined()
   expect(machines.find(p => p.serialNumber === machineB.serialNumber)).toBeDefined()
 })
+
+test("List machines does not crash", async () => {
+  const token = await getToken()
+
+  const machines = await getMachines({ token })
+
+  expect(machines.length).toBeGreaterThanOrEqual(0)
+})

@@ -42,13 +42,15 @@ export type ApiCategory = {
   priority: number
 }
 
-export const apiCategorySchema = z.object({
-  name: z.string(),
-  description: z.string().nullable(),
-  main_img: z.string().nullable(),
-  preview_img: z.string().nullable(),
-  priority: z.number(),
-})
+export const apiCategorySchema = z
+  .object({
+    name: z.string(),
+    description: z.string().nullable(),
+    main_img: z.string().nullable(),
+    preview_img: z.string().nullable(),
+    priority: z.number(),
+  })
+  .strict()
 
 {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -83,7 +85,7 @@ export type ApiCreateCategoryResponse = MinimalApiCategoryResponse
 export const apiCreateCategoryResponseSchema = apiCategorySchema
   .partial()
   .required(fieldsWithoutDefaultMap)
-  .and(apiXlAutomatenDatabaseObjectSchema)
+  .merge(apiXlAutomatenDatabaseObjectSchema)
 
 {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -95,7 +97,7 @@ export const apiCreateCategoryResponseSchema = apiCategorySchema
 export type ApiUpdateCategoryRequest = ApiCreateCategoryRequest
 export type ApiUpdateCategoryResponse = ApiCategory & ApiXlAutomatenDatabaseObject
 
-export const apiUpdateCategoryResponseSchema = apiCategorySchema.and(apiXlAutomatenDatabaseObjectSchema)
+export const apiUpdateCategoryResponseSchema = apiCategorySchema.merge(apiXlAutomatenDatabaseObjectSchema)
 
 {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -107,7 +109,7 @@ export const apiUpdateCategoryResponseSchema = apiCategorySchema.and(apiXlAutoma
 export type ApiGetCategoryRequest = void
 export type ApiGetCategoryResponse = ApiCategory & ApiXlAutomatenDatabaseObject
 
-export const apiGetCategoryResponseSchema = apiCategorySchema.and(apiXlAutomatenDatabaseObjectSchema)
+export const apiGetCategoryResponseSchema = apiCategorySchema.merge(apiXlAutomatenDatabaseObjectSchema)
 
 {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -119,7 +121,7 @@ export const apiGetCategoryResponseSchema = apiCategorySchema.and(apiXlAutomaten
 export type ApiGetCategoriesRequest = void
 export type ApiGetCategoriesResponse = Array<ApiCategory & ApiXlAutomatenDatabaseObject>
 
-export const apiGetCategoriesResponseSchema = z.array(apiCategorySchema.and(apiXlAutomatenDatabaseObjectSchema))
+export const apiGetCategoriesResponseSchema = z.array(apiCategorySchema.merge(apiXlAutomatenDatabaseObjectSchema))
 
 {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars

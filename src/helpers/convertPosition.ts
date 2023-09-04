@@ -52,23 +52,25 @@ export type ApiPosition = {
   number: 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12
 }
 
-export const apiPositionSchema = z.object({
-  tray_id: z.number(),
-  width: z.number(),
-  number: z
-    .literal(1)
-    .or(z.literal(2))
-    .or(z.literal(3))
-    .or(z.literal(4))
-    .or(z.literal(5))
-    .or(z.literal(6))
-    .or(z.literal(7))
-    .or(z.literal(8))
-    .or(z.literal(9))
-    .or(z.literal(10))
-    .or(z.literal(11))
-    .or(z.literal(12)),
-})
+export const apiPositionSchema = z
+  .object({
+    tray_id: z.number(),
+    width: z.number(),
+    number: z
+      .literal(1)
+      .or(z.literal(2))
+      .or(z.literal(3))
+      .or(z.literal(4))
+      .or(z.literal(5))
+      .or(z.literal(6))
+      .or(z.literal(7))
+      .or(z.literal(8))
+      .or(z.literal(9))
+      .or(z.literal(10))
+      .or(z.literal(11))
+      .or(z.literal(12)),
+  })
+  .strict()
 
 {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -85,9 +87,11 @@ export type ApiPositionMapping = {
   mapping: null
 }
 
-export const apiPositionMappingSchema = z.object({
-  mapping: z.null(),
-})
+export const apiPositionMappingSchema = z
+  .object({
+    mapping: z.null(),
+  })
+  .strict()
 
 {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -131,7 +135,7 @@ export type MinimalApiPositionResponse = Required<Pick<ApiPosition, FieldsThatWi
 export const minimalPositionResponseSchema = apiPositionSchema
   .partial()
   .required(fieldsThatWillAlwaysGetReturnedMap)
-  .and(apiXlAutomatenDatabaseObjectSchema)
+  .merge(apiXlAutomatenDatabaseObjectSchema)
 
 export type ApiCreatePositionRequest = Required<Pick<ApiPosition, FieldsRequiredForCreate>> & Partial<ApiPosition>
 export type ApiCreatePositionResponse = MinimalApiPositionResponse
@@ -151,7 +155,7 @@ export type ApiUpdatePositionRequest = Required<
   Partial<ApiPosition>
 export type ApiUpdatePositionResponse = ApiPosition & ApiXlAutomatenDatabaseObject
 
-export const apiUpdatePositionResponseSchema = apiPositionSchema.and(apiXlAutomatenDatabaseObjectSchema)
+export const apiUpdatePositionResponseSchema = apiPositionSchema.merge(apiXlAutomatenDatabaseObjectSchema)
 
 {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -163,7 +167,7 @@ export const apiUpdatePositionResponseSchema = apiPositionSchema.and(apiXlAutoma
 export type ApiGetPositionRequest = void
 export type ApiGetPositionResponse = ApiPosition & ApiXlAutomatenDatabaseObject
 
-export const apiGetPositionResponseSchema = apiPositionSchema.and(apiXlAutomatenDatabaseObjectSchema)
+export const apiGetPositionResponseSchema = apiPositionSchema.merge(apiXlAutomatenDatabaseObjectSchema)
 
 {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -176,8 +180,8 @@ export type ApiDeletePositionRequest = void
 export type ApiDeletePositionResponse = ApiPosition & ApiXlAutomatenDatabaseObject & ApiPositionMapping
 
 export const apiDeletePositionResponseSchema = apiPositionSchema
-  .and(apiXlAutomatenDatabaseObjectSchema)
-  .and(apiPositionMappingSchema)
+  .merge(apiXlAutomatenDatabaseObjectSchema)
+  .merge(apiPositionMappingSchema)
 
 {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -189,7 +193,7 @@ export const apiDeletePositionResponseSchema = apiPositionSchema
 export type ApiGetPositionsRequest = void
 export type ApiGetPositionsResponse = Array<ApiPosition & ApiXlAutomatenDatabaseObject>
 
-export const apiGetPositionsResponseSchema = z.array(apiPositionSchema.and(apiXlAutomatenDatabaseObjectSchema))
+export const apiGetPositionsResponseSchema = z.array(apiPositionSchema.merge(apiXlAutomatenDatabaseObjectSchema))
 
 {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars

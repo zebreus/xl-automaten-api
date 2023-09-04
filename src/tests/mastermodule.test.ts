@@ -25,3 +25,11 @@ test("Get mastermodules seems to work", async () => {
   expect(mastermodules.length).toBeGreaterThanOrEqual(1)
   expect(mastermodules.find(mastermodule => mastermodule.id === mastermoduleId)).toBeDefined()
 })
+
+test("List mastermodules does not crash", async () => {
+  const token = await getToken()
+
+  const mastermodules = await getMastermodules({ token })
+
+  expect(mastermodules.length).toBeGreaterThanOrEqual(0)
+})

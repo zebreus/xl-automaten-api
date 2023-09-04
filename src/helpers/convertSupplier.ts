@@ -31,10 +31,12 @@ export type ApiSupplier = {
   email: string
 }
 
-export const apiSupplierSchema = z.object({
-  name: z.string(),
-  email: z.string(),
-})
+export const apiSupplierSchema = z
+  .object({
+    name: z.string(),
+    email: z.string(),
+  })
+  .strict()
 
 {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -86,7 +88,7 @@ export type MinimalApiSupplierResponse = Required<Pick<ApiSupplier, FieldsThatWi
 export const minimalSupplierResponseSchema = apiSupplierSchema
   .partial()
   .required(fieldsThatWillAlwaysGetReturnedMap)
-  .and(apiXlAutomatenDatabaseObjectSchema)
+  .merge(apiXlAutomatenDatabaseObjectSchema)
 
 export type ApiCreateSupplierRequest = Required<Pick<ApiSupplier, FieldsRequiredForCreate>> & Partial<ApiSupplier>
 export type ApiCreateSupplierResponse = MinimalApiSupplierResponse
@@ -106,7 +108,7 @@ export type ApiUpdateSupplierRequest = Required<
   Partial<ApiSupplier>
 export type ApiUpdateSupplierResponse = ApiSupplier & ApiXlAutomatenDatabaseObject
 
-export const apiUpdateSupplierResponseSchema = apiSupplierSchema.and(apiXlAutomatenDatabaseObjectSchema)
+export const apiUpdateSupplierResponseSchema = apiSupplierSchema.merge(apiXlAutomatenDatabaseObjectSchema)
 
 {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -118,7 +120,7 @@ export const apiUpdateSupplierResponseSchema = apiSupplierSchema.and(apiXlAutoma
 export type ApiDeleteSupplierRequest = void
 export type ApiDeleteSupplierResponse = ApiSupplier & ApiXlAutomatenDatabaseObject
 
-export const apiDeleteSupplierResponseSchema = apiSupplierSchema.and(apiXlAutomatenDatabaseObjectSchema)
+export const apiDeleteSupplierResponseSchema = apiSupplierSchema.merge(apiXlAutomatenDatabaseObjectSchema)
 
 {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -130,7 +132,7 @@ export const apiDeleteSupplierResponseSchema = apiSupplierSchema.and(apiXlAutoma
 export type ApiGetSuppliersRequest = void
 export type ApiGetSuppliersResponse = Array<ApiSupplier & ApiXlAutomatenDatabaseObject>
 
-export const apiGetSuppliersResponseSchema = z.array(apiSupplierSchema.and(apiXlAutomatenDatabaseObjectSchema))
+export const apiGetSuppliersResponseSchema = z.array(apiSupplierSchema.merge(apiXlAutomatenDatabaseObjectSchema))
 
 {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars

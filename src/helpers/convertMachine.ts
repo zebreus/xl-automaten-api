@@ -39,11 +39,11 @@ export type Machine = {
   tempWarningTemp: number
   /** TODO: Figure out what this means */
   tempWarningTime: number
-  /** When the machine was last connected
+  /** TODO: Figure out what this means
    *
    * Cannot be set
    */
-  lastConnected?: Date
+  lastConnected?: number
   /** ID of the associated Mastermodule */
   mastermoduleId?: number
   /** Whether the machine is active
@@ -76,7 +76,7 @@ export type Machine = {
    */
   liftC?: string
   /** TODO: Figure out what this means */
-  liftMeasurements?: string
+  liftMeasurements?: Array<MachineLiftMeasurements>
   /** TODO: Figure out what this means
    *
    * Default: 0
@@ -89,6 +89,26 @@ export type Machine = {
    * Cannot be set
    */
   lastFilled?: Date
+  /** TODO: Figure out what this means
+   *
+   * Cannot be set
+   */
+  pushDoor?: boolean
+  /** TODO: Figure out what this means
+   *
+   * Cannot be set
+   */
+  door?: boolean
+  /** TODO: Figure out what this means
+   *
+   * Cannot be set
+   */
+  liftDown?: boolean
+  /** TODO: Figure out what this means
+   *
+   * Cannot be set
+   */
+  liftUp?: boolean
   /** TODO: Figure out what this means
    *
    * Cannot be set
@@ -109,6 +129,12 @@ export type Machine = {
   filledItems: number
 } & XlAutomatenDatabaseObject
 
+export type MachineTemperature = {
+  /** The temperature in Celsius */
+  temperature: number
+  machineId: number
+} & XlAutomatenDatabaseObject
+
 export type MachineTrays = {
   /** Trays that are associated with this machine
    *
@@ -119,8 +145,44 @@ export type MachineTrays = {
 
 export type MachineExtraFields = MachineTrays & {
   /** The latest temperature that was measured */
-  latestTemperature?: number
+  latestTemperature?: MachineTemperature
+  /** The coin changer of the machine */
+  coinChanger?: MachineCoinChanger
 }
+
+export type MachineLiftMeasurements = {
+  level: number
+  mm: number
+  /** Finished is the only confirmed status, I guessed the rest */
+  status: "finished" | "error" | "running"
+}
+
+export type MachineCoinChanger = {
+  /** Number of 5 cent coins */
+  c5: number
+  /** Number of 10 cent coins */
+  c10: number
+  /** Number of 20 cent coins */
+  c20: number
+  /** Number of 50 cent coins */
+  c50: number
+  /** Number of 1 euro coins */
+  c100: number
+  /** Number of 2 euro coins */
+  c200: number
+  /** ID of the associated machine */
+  machineId: number
+  /** Cash in the cash box
+   *
+   * String containing a floating point number like "0.00"
+   */
+  cashBox: string
+  /** Bills
+   *
+   * String containing a floating point number like "0.00"
+   */
+  bills: string
+} & XlAutomatenDatabaseObject
 
 /** Machine, but only the fields that can be edited */
 export type EditableMachine = Omit<
@@ -178,11 +240,13 @@ export type ApiMachine = {
   temp_warning_temp: number
   /** TODO: Figure out what this means */
   temp_warning_time: number
-  /** When the machine was last connected
+  /** TODO: Figure out what this means
    *
    * Cannot be set
+   *
+   * A number
    */
-  last_connected: string | null
+  last_connected: number | null
   /** ID of the associated Mastermodule */
   mastermodule_id: number | null
   /** Whether the machine is active
@@ -201,20 +265,25 @@ export type ApiMachine = {
   lift_max: number | null
   /** TODO: Figure out what this means
    *
-   * Needs to be a number in a string
+   * Needs to be a floating point number in a string
    */
   lift_a: string | null
   /** TODO: Figure out what this means
    *
-   * Needs to be a number in a string
+   * Needs to be a floating point number in a string
    */
   lift_b: string | null
   /** TODO: Figure out what this means
    *
-   * Needs to be a number in a string
+   * Needs to be a floating point number in a string
    */
   lift_c: string | null
-  /** TODO: Figure out what this means */
+  /** TODO: Figure out what this means
+   *
+   * Is a JSON string like
+   *
+   * "[{\"level\":220,\"mm\":\"507\",\"status\":\"finished\"},{\"level\":430,\"mm\":\"978\",\"status\":\"finished\"},{\"level\":590,\"mm\":\"1369\",\"status\":\"finished\"}]",
+   */
   lift_measurements: string | null
   /** TODO: Figure out what this means
    *
@@ -232,22 +301,22 @@ export type ApiMachine = {
    *
    * Cannot be set
    */
-  push_door: null
+  push_door: 0 | 1 | null
   /** TODO: Figure out what this means
    *
    * Cannot be set
    */
-  door: null
+  door: 0 | 1 | null
   /** TODO: Figure out what this means
    *
    * Cannot be set
    */
-  lift_down: null
+  lift_down: 0 | 1 | null
   /** TODO: Figure out what this means
    *
    * Cannot be set
    */
-  lift_up: null
+  lift_up: 0 | 1 | null
   /** TODO: Figure out what this means
    *
    * Cannot be set
@@ -270,37 +339,39 @@ export type ApiMachine = {
   filled_items: number
 }
 
-export const apiMachineSchema = z.object({
-  name: z.string(),
-  display_name: z.string(),
-  serial_number: z.string(),
-  place: z.string(),
-  test_mode: z.literal(0).or(z.literal(1)),
-  temp_stop_temp: z.number(),
-  temp_stop_time: z.number(),
-  temp_warning_temp: z.number(),
-  temp_warning_time: z.number(),
-  last_connected: z.string().nullable(),
-  mastermodule_id: z.number().nullable(),
-  active: z.literal(0).or(z.literal(1)),
-  lift: z.literal(0).or(z.literal(1)),
-  lift_max: z.number().nullable(),
-  lift_a: z.string().nullable(),
-  lift_b: z.string().nullable(),
-  lift_c: z.string().nullable(),
-  lift_measurements: z.string().nullable(),
-  lift_roll: z.number(),
-  lift_difference_back_front: z.number().nullable(),
-  last_filled: z.string().nullable(),
-  push_door: z.null(),
-  door: z.null(),
-  lift_down: z.null(),
-  lift_up: z.null(),
-  photocell: z.literal(0).or(z.literal(1)).nullable(),
-  last_status_update: z.string().nullable(),
-  software_version: z.number().nullable(),
-  filled_items: z.number(),
-})
+export const apiMachineSchema = z
+  .object({
+    name: z.string(),
+    display_name: z.string(),
+    serial_number: z.string(),
+    place: z.string(),
+    test_mode: z.literal(0).or(z.literal(1)),
+    temp_stop_temp: z.number(),
+    temp_stop_time: z.number(),
+    temp_warning_temp: z.number(),
+    temp_warning_time: z.number(),
+    last_connected: z.number().nullable(),
+    mastermodule_id: z.number().nullable(),
+    active: z.literal(0).or(z.literal(1)),
+    lift: z.literal(0).or(z.literal(1)),
+    lift_max: z.number().nullable(),
+    lift_a: z.string().nullable(),
+    lift_b: z.string().nullable(),
+    lift_c: z.string().nullable(),
+    lift_measurements: z.string().nullable(),
+    lift_roll: z.number(),
+    lift_difference_back_front: z.number().nullable(),
+    last_filled: z.string().nullable(),
+    push_door: z.literal(0).or(z.literal(1)).nullable(),
+    door: z.literal(0).or(z.literal(1)).nullable(),
+    lift_down: z.literal(0).or(z.literal(1)).nullable(),
+    lift_up: z.literal(0).or(z.literal(1)).nullable(),
+    photocell: z.literal(0).or(z.literal(1)).nullable(),
+    last_status_update: z.string().nullable(),
+    software_version: z.number().nullable(),
+    filled_items: z.number(),
+  })
+  .strict()
 
 {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -309,17 +380,89 @@ export const apiMachineSchema = z.object({
   const y: ApiMachine = undefined as unknown as z.infer<typeof apiMachineSchema>
 }
 
-export type ApiMachineExtraFields = {
-  latest_temperature: number | null
-  parameters: Array<never>
-  coin_changer: null
+export type ApiMachineLatestTemperature = {
+  /** The temperature in Celsius */
+  temperature: number
+  machine_id: number
+} & ApiXlAutomatenDatabaseObject
+
+export const apiMachineLatestTemperatureSchema = z
+  .object({
+    temperature: z.number(),
+    machine_id: z.number(),
+  })
+  .merge(apiXlAutomatenDatabaseObjectSchema)
+  .strict()
+
+{
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const x: z.infer<typeof apiMachineLatestTemperatureSchema> = undefined as unknown as ApiMachineLatestTemperature
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const y: ApiMachineLatestTemperature = undefined as unknown as z.infer<typeof apiMachineLatestTemperatureSchema>
 }
 
-export const apiMachineExtraFieldsSchema = z.object({
-  latest_temperature: z.number().nullable(),
-  parameters: z.array(z.never()),
-  coin_changer: z.null(),
-})
+export type ApiMachineCoinChanger = {
+  /** Number of 5 cent coins */
+  c5: number
+  /** Number of 10 cent coins */
+  c10: number
+  /** Number of 20 cent coins */
+  c20: number
+  /** Number of 50 cent coins */
+  c50: number
+  /** Number of 1 euro coins */
+  c100: number
+  /** Number of 2 euro coins */
+  c200: number
+  /** ID of the associated machine */
+  machine_id: number
+  /** Cash in the cash box
+   *
+   * String containing a floating point number like "0.00"
+   */
+  cash_box: string
+  /** Bills
+   *
+   * String containing a floating point number like "0.00"
+   */
+  bills: string
+} & ApiXlAutomatenDatabaseObject
+
+export const apiMachineCoinChangerSchema = z
+  .object({
+    c5: z.number(),
+    c10: z.number(),
+    c20: z.number(),
+    c50: z.number(),
+    c100: z.number(),
+    c200: z.number(),
+    machine_id: z.number(),
+    cash_box: z.string(),
+    bills: z.string(),
+  })
+  .merge(apiXlAutomatenDatabaseObjectSchema)
+  .strict()
+
+{
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const x: z.infer<typeof apiMachineCoinChangerSchema> = undefined as unknown as ApiMachineCoinChanger
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const y: ApiMachineCoinChanger = undefined as unknown as z.infer<typeof apiMachineCoinChangerSchema>
+}
+
+export type ApiMachineExtraFields = {
+  latest_temperature: ApiMachineLatestTemperature | null
+  parameters: Array<never>
+  coin_changer: ApiMachineCoinChanger | null
+}
+
+export const apiMachineExtraFieldsSchema = z
+  .object({
+    latest_temperature: apiMachineLatestTemperatureSchema.nullable(),
+    parameters: z.array(z.never()),
+    coin_changer: apiMachineCoinChangerSchema.nullable(),
+  })
+  .strict()
 
 {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -328,14 +471,38 @@ export const apiMachineExtraFieldsSchema = z.object({
   const y: ApiMachineExtraFields = undefined as unknown as z.infer<typeof apiMachineExtraFieldsSchema>
 }
 
+export type ApiMachineLiftMeasurements = {
+  level: number
+  mm: string
+  /** Finished is the only confirmed status, I guessed the rest */
+  status: "finished" | "error" | "running"
+}
+
+export const apiMachineLiftMeasurementsSchema = z
+  .object({
+    level: z.number(),
+    mm: z.string(),
+    status: z.enum(["finished", "error", "running"]),
+  })
+  .strict()
+
+{
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const x: z.infer<typeof apiMachineLiftMeasurementsSchema> = undefined as unknown as ApiMachineLiftMeasurements
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const y: ApiMachineLiftMeasurements = undefined as unknown as z.infer<typeof apiMachineLiftMeasurementsSchema>
+}
+
 export type ApiMachineTrays = {
   /** Trays that are associated with this machine */
   trays: Array<ApiTray & ApiTrayPositions & ApiXlAutomatenDatabaseObject>
 }
 
-export const apiMachineTraysSchema = z.object({
-  trays: z.array(apiTraySchema.and(apiTrayPositionsSchema).and(apiXlAutomatenDatabaseObjectSchema)),
-})
+export const apiMachineTraysSchema = z
+  .object({
+    trays: z.array(apiTraySchema.merge(apiTrayPositionsSchema).merge(apiXlAutomatenDatabaseObjectSchema).strict()),
+  })
+  .strict()
 
 {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -412,7 +579,7 @@ export type MinimalApiMachineResponse = Required<Pick<ApiMachine, FieldsThatWill
 export const minimalMachineResponseSchema = apiMachineSchema
   .partial()
   .required(fieldsThatWillAlwaysGetReturnedMap)
-  .and(apiXlAutomatenDatabaseObjectSchema)
+  .merge(apiXlAutomatenDatabaseObjectSchema)
 
 export type ApiCreateMachineRequest = Required<Pick<Omit<ApiMachine, FieldsThatAreReadOnly>, FieldsRequiredForCreate>> &
   Partial<ApiMachine>
@@ -430,7 +597,7 @@ export const apiCreateMachineResponseSchema = minimalMachineResponseSchema
 export type ApiUpdateMachineRequest = ApiCreateMachineRequest
 export type ApiUpdateMachineResponse = ApiMachine & ApiXlAutomatenDatabaseObject
 
-export const apiUpdateMachineResponseSchema = apiMachineSchema.and(apiXlAutomatenDatabaseObjectSchema)
+export const apiUpdateMachineResponseSchema = apiMachineSchema.merge(apiXlAutomatenDatabaseObjectSchema)
 
 {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -442,7 +609,7 @@ export const apiUpdateMachineResponseSchema = apiMachineSchema.and(apiXlAutomate
 export type ApiGetMachineRequest = void
 export type ApiGetMachineResponse = ApiMachine & ApiXlAutomatenDatabaseObject
 
-export const apiGetMachineResponseSchema = apiMachineSchema.and(apiXlAutomatenDatabaseObjectSchema)
+export const apiGetMachineResponseSchema = apiMachineSchema.merge(apiXlAutomatenDatabaseObjectSchema)
 
 {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -455,8 +622,8 @@ export type ApiDeleteMachineRequest = void
 export type ApiDeleteMachineResponse = ApiMachine & ApiXlAutomatenDatabaseObject & ApiMachineTrays
 
 export const apiDeleteMachineResponseSchema = apiMachineSchema
-  .and(apiXlAutomatenDatabaseObjectSchema)
-  .and(apiMachineTraysSchema)
+  .merge(apiXlAutomatenDatabaseObjectSchema)
+  .merge(apiMachineTraysSchema)
 
 {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -471,7 +638,10 @@ export type ApiGetMachinesResponse = Array<
 >
 
 export const apiGetMachinesResponseSchema = z.array(
-  apiMachineSchema.and(apiXlAutomatenDatabaseObjectSchema).and(apiMachineExtraFieldsSchema).and(apiMachineTraysSchema)
+  apiMachineSchema
+    .merge(apiXlAutomatenDatabaseObjectSchema)
+    .merge(apiMachineExtraFieldsSchema)
+    .merge(apiMachineTraysSchema)
 )
 
 {
@@ -493,7 +663,7 @@ export const convertApiMachine = (response: MinimalApiMachineResponse): Machine 
     tempStopTime: response.temp_stop_time,
     tempWarningTemp: response.temp_warning_temp,
     tempWarningTime: response.temp_warning_time,
-    ...(response.last_connected != null ? { lastConnected: parseApiDate(response.last_connected) } : {}),
+    ...(response.last_connected != null ? { lastConnected: response.last_connected } : {}),
     ...(response.mastermodule_id != null ? { mastermoduleId: response.mastermodule_id } : {}),
     active: response.active === 1,
     lift: response.lift === 1,
@@ -501,12 +671,18 @@ export const convertApiMachine = (response: MinimalApiMachineResponse): Machine 
     ...(response.lift_a != null ? { liftA: response.lift_a } : {}),
     ...(response.lift_b != null ? { liftB: response.lift_b } : {}),
     ...(response.lift_c != null ? { liftC: response.lift_c } : {}),
-    ...(response.lift_measurements != null ? { liftMeasurements: response.lift_measurements } : {}),
+    ...(response.lift_measurements != null
+      ? { liftMeasurements: parseApiMachineLiftMeasurements(response.lift_measurements) }
+      : {}),
     liftRoll: response.lift_roll ?? 0,
     ...(response.lift_difference_back_front != null
       ? { liftDifferenceBackFront: response.lift_difference_back_front }
       : {}),
     ...(response.last_filled != null ? { lastFilled: parseApiDate(response.last_filled) } : {}),
+    ...(response.push_door != null ? { pushDoor: response.push_door === 1 } : {}),
+    ...(response.door != null ? { door: response.door === 1 } : {}),
+    ...(response.lift_down != null ? { liftDown: response.lift_down === 1 } : {}),
+    ...(response.lift_up != null ? { liftUp: response.lift_up === 1 } : {}),
     ...(response.photocell != null ? { photocell: response.photocell === 1 } : {}),
     ...(response.last_status_update != null ? { lastStatusUpdate: parseApiDate(response.last_status_update) } : {}),
     ...(response.software_version != null ? { softwareVersion: response.software_version } : {}),
@@ -514,6 +690,21 @@ export const convertApiMachine = (response: MinimalApiMachineResponse): Machine 
   } satisfies Machine
 
   return result
+}
+
+export const parseApiMachineLiftMeasurements = (response: string): Array<MachineLiftMeasurements> => {
+  const parsedString = JSON.parse(response)
+  const machineLiftMeasurements = z.array(apiMachineLiftMeasurementsSchema.strict()).parse(parsedString)
+  const result = machineLiftMeasurements.map(measurement => ({
+    ...measurement,
+    mm: parseFloat(measurement.mm),
+  }))
+  return result
+}
+
+export const stringifyApiMachineLiftMeasurements = (response: Array<MachineLiftMeasurements>): string => {
+  const stringifiedMeasurements = JSON.stringify(response)
+  return stringifiedMeasurements
 }
 
 export const convertApiMachineWithTrays = (
@@ -534,7 +725,38 @@ export const convertApiMachineWithExtraFields = (
   const result = {
     ...machine,
     trays: response.trays.map(tray => convertApiTrayWithPositions(tray)),
+    ...(response.latest_temperature
+      ? { latestTemperature: convertApiMachineLatestTemperature(response.latest_temperature) }
+      : {}),
+    ...(response.coin_changer ? { coinChanger: convertApiMachineCoinChanger(response.coin_changer) } : {}),
   }
+  return result
+}
+
+export const convertApiMachineLatestTemperature = (response: ApiMachineLatestTemperature): MachineTemperature => {
+  const result = {
+    ...convertApiXlAutomatenDatabaseObject(response),
+    temperature: response.temperature,
+    machineId: response.machine_id,
+  } satisfies MachineTemperature
+
+  return result
+}
+
+export const convertApiMachineCoinChanger = (response: ApiMachineCoinChanger): MachineCoinChanger => {
+  const result = {
+    ...convertApiXlAutomatenDatabaseObject(response),
+    c5: response.c5,
+    c10: response.c10,
+    c20: response.c20,
+    c50: response.c50,
+    c100: response.c100,
+    c200: response.c200,
+    machineId: response.machine_id,
+    cashBox: response.cash_box,
+    bills: response.bills,
+  } satisfies MachineCoinChanger
+
   return result
 }
 
@@ -556,7 +778,13 @@ export const convertMachineToRequest = (request: NewMachine): ApiCreateMachineRe
     ...("liftA" in request ? { lift_a: request.liftA ?? null } : {}),
     ...("liftB" in request ? { lift_b: request.liftB ?? null } : {}),
     ...("liftC" in request ? { lift_c: request.liftC ?? null } : {}),
-    ...("liftMeasurements" in request ? { lift_measurements: request.liftMeasurements ?? null } : {}),
+    ...("liftMeasurements" in request
+      ? {
+          lift_measurements: request.liftMeasurements
+            ? stringifyApiMachineLiftMeasurements(request.liftMeasurements)
+            : null,
+        }
+      : {}),
     ...("liftRoll" in request ? { lift_roll: request.liftRoll } : {}),
     ...("liftDifferenceBackFront" in request
       ? { lift_difference_back_front: request.liftDifferenceBackFront ?? null }

@@ -189,9 +189,11 @@ export type ApiPickupItems = {
   items: Array<ApiPickupItem & ApiXlAutomatenDatabaseObject>
 }
 
-export const apiPickupItemsSchema = z.object({
-  items: z.array(apiPickupItemSchema.and(apiXlAutomatenDatabaseObjectSchema)),
-})
+export const apiPickupItemsSchema = z
+  .object({
+    items: z.array(apiPickupItemSchema.merge(apiXlAutomatenDatabaseObjectSchema).strict()),
+  })
+  .strict()
 
 {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -242,7 +244,7 @@ export type MinimalApiPickupResponse = Required<Pick<ApiPickup, FieldsThatWillAl
 export const minimalPickupResponseSchema = apiPickupSchema
   .partial()
   .required(fieldsThatWillAlwaysGetReturnedMap)
-  .and(apiXlAutomatenDatabaseObjectSchema)
+  .merge(apiXlAutomatenDatabaseObjectSchema)
 
 export type ApiCreatePickupRequest = Required<Pick<ApiPickup, FieldsRequiredForCreate>> & Partial<ApiPickup>
 export type ApiCreatePickupResponse = MinimalApiPickupResponse
@@ -260,7 +262,7 @@ export type ApiUpdatePickupRequest = Required<Omit<Pick<ApiPickup, FieldsRequire
   Partial<ApiPickup>
 export type ApiUpdatePickupResponse = ApiPickup & ApiXlAutomatenDatabaseObject
 
-export const apiUpdatePickupResponseSchema = apiPickupSchema.and(apiXlAutomatenDatabaseObjectSchema)
+export const apiUpdatePickupResponseSchema = apiPickupSchema.merge(apiXlAutomatenDatabaseObjectSchema)
 
 {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -273,8 +275,8 @@ export type ApiGetPickupRequest = void
 export type ApiGetPickupResponse = ApiPickup & ApiXlAutomatenDatabaseObject & ApiPickupItems
 
 export const apiGetPickupResponseSchema = apiPickupSchema
-  .and(apiXlAutomatenDatabaseObjectSchema)
-  .and(apiPickupItemsSchema)
+  .merge(apiXlAutomatenDatabaseObjectSchema)
+  .merge(apiPickupItemsSchema)
 
 {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -286,7 +288,7 @@ export const apiGetPickupResponseSchema = apiPickupSchema
 export type ApiDeletePickupRequest = void
 export type ApiDeletePickupResponse = ApiPickup & ApiXlAutomatenDatabaseObject
 
-export const apiDeletePickupResponseSchema = apiPickupSchema.and(apiXlAutomatenDatabaseObjectSchema)
+export const apiDeletePickupResponseSchema = apiPickupSchema.merge(apiXlAutomatenDatabaseObjectSchema)
 
 {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -299,7 +301,7 @@ export type ApiGetPickupsRequest = void
 export type ApiGetPickupsResponse = Array<ApiPickup & ApiXlAutomatenDatabaseObject & ApiPickupItems>
 
 export const apiGetPickupsResponseSchema = z.array(
-  apiPickupSchema.and(apiXlAutomatenDatabaseObjectSchema).and(apiPickupItemsSchema)
+  apiPickupSchema.merge(apiXlAutomatenDatabaseObjectSchema).merge(apiPickupItemsSchema)
 )
 
 {
