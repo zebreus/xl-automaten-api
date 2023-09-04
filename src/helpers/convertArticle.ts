@@ -446,9 +446,11 @@ export const apiCreateArticleResponseSchema = minimalArticleResponseSchema
 }
 
 export type ApiUpdateArticleRequest = ApiCreateArticleRequest
-export type ApiUpdateArticleResponse = ApiArticle & ApiXlAutomatenDatabaseObject
+export type ApiUpdateArticleResponse = ApiArticle & ApiXlAutomatenDatabaseObject & ApiArticleExtraFields
 
-export const apiUpdateArticleResponseSchema = apiArticleSchema.merge(apiXlAutomatenDatabaseObjectSchema)
+export const apiUpdateArticleResponseSchema = apiArticleSchema
+  .merge(apiXlAutomatenDatabaseObjectSchema)
+  .merge(apiArticleExtraFieldsSchema)
 
 {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
