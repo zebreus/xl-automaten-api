@@ -1,5 +1,6 @@
 import { login } from "login"
 import { getMastermodules } from "mastermodule"
+import { getMastermoduleStock } from "mastermoduleStock"
 import { email, mastermoduleId, password } from "tests/login"
 
 let token = ""
@@ -32,4 +33,18 @@ test("List mastermodules does not crash", async () => {
   const mastermodules = await getMastermodules({ token })
 
   expect(mastermodules.length).toBeGreaterThanOrEqual(0)
+})
+
+test("List mastermodule stock does not crash", async () => {
+  const token = await getToken()
+
+  const mastermodules = await getMastermodules({ token })
+
+  const mastermoduleId = mastermodules?.[0]?.id
+
+  expect(mastermoduleId).toBeDefined()
+
+  const mastermoduleStock = await getMastermoduleStock({ id: mastermoduleId ?? 0, token })
+
+  expect(mastermoduleStock.length).toBeGreaterThanOrEqual(0)
 })
