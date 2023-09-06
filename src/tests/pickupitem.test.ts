@@ -1,4 +1,4 @@
-import { createArticle, getArticles } from "article"
+import { archiveArticle, createArticle, getArticles } from "article"
 import { PickupItem } from "helpers/convertPickupItem"
 import { login } from "login"
 import { createPickup, deletePickup } from "pickup"
@@ -67,31 +67,34 @@ const getPickupId = async () => {
 }
 
 let testArticle: number
+const articleIdsToDeleteAfterwards: Array<number> = []
 const getArticleId = async () => {
   if (testArticle) {
     return testArticle
   }
   const token = await getToken()
   const articles = await getArticles({ token })
-  const supplierId = await getSupplierId()
   const firstArticle = articles[0]
   if (firstArticle) {
     testArticle = firstArticle.id
     return firstArticle.id
   }
 
+  const supplierId = await getSupplierId()
   const article = await createArticle({
     token,
     article: {
-      description: "Created for getArticle test",
+      description: "Created for mapping test",
       name: "test-article",
-      number: "123456",
+      number: "123456-mapping",
       price: 4,
       supplierId: supplierId,
     },
   })
 
-  return article.id
+  testArticle = article.id
+  articleIdsToDeleteAfterwards.push(article.id)
+  return testArticle
 }
 
 const pickupItemsToDeleteAfterwards: Array<number> = []
@@ -123,6 +126,16 @@ afterAll(async () => {
     try {
       await deletePickup({
         code: code[0],
+        token,
+      })
+    } catch (e) {
+      // Ignore errors
+    }
+  }
+  for (const id of articleIdsToDeleteAfterwards) {
+    try {
+      await archiveArticle({
+        id,
         token,
       })
     } catch (e) {

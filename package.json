@@ -39,7 +39,7 @@
     "build": "rm -rf dist && tsc -p tsconfig.build.json && resolve-tspaths -p tsconfig.build.json",
     "prepack": "pinst --disable",
     "format": "prettier --write .",
-    "test": "NODE_OPTIONS='--experimental-vm-modules' jest",
+    "test": "NODE_OPTIONS='--experimental-vm-modules' jest --runInBand",
     "postinstall": "husky install",
     "postpack": "pinst --enable"
   },
