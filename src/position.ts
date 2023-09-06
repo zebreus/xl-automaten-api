@@ -3,13 +3,17 @@ import {
   NewPosition,
   Position,
   apiCreatePositionResponseSchema,
-  apiDeletePositionResponseSchema,
   apiGetPositionResponseSchema,
   apiGetPositionsResponseSchema,
   apiUpdatePositionResponseSchema,
   convertApiPosition,
   convertPositionToRequest,
 } from "helpers/convertPosition"
+import {
+  PositionMapping,
+  apiDeletePositionResponseSchema,
+  convertApiPositionWithMapping,
+} from "helpers/convertPositionAvoidDependencyCycle"
 import { AuthenticatedApiRequestOptions, makeApiRequest } from "helpers/makeApiRequest"
 
 export type CreatePositionOptions = {
@@ -158,14 +162,14 @@ export type DeletePositionOptions = {
  *
  * The last state of the deleted position will be returned.
  */
-export const deletePosition = async (options: DeletePositionOptions): Promise<Position> => {
+export const deletePosition = async (options: DeletePositionOptions): Promise<Position & PositionMapping> => {
   const response = await makeApiRequest(
     { ...options, schema: apiDeletePositionResponseSchema },
     "DELETE",
     `position/${encodeURIComponent(options.id)}`
   )
 
-  const position = convertApiPosition(response)
+  const position = convertApiPositionWithMapping(response)
 
   return position
 }

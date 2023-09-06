@@ -79,27 +79,6 @@ export const apiPositionSchema = z
   const y: ApiPosition = undefined as unknown as z.infer<typeof apiPositionSchema>
 }
 
-export type ApiPositionMapping = {
-  /** TODO: Find out what this means
-   *
-   * Seems to be always null
-   */
-  mapping: null
-}
-
-export const apiPositionMappingSchema = z
-  .object({
-    mapping: z.null(),
-  })
-  .strict()
-
-{
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const x: z.infer<typeof apiPositionMappingSchema> = undefined as unknown as ApiPositionMapping
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const y: ApiPositionMapping = undefined as unknown as z.infer<typeof apiPositionMappingSchema>
-}
-
 type PartialOrUndefined<T> = {
   [P in keyof T]?: T[P] | undefined
 }
@@ -174,20 +153,6 @@ export const apiGetPositionResponseSchema = apiPositionSchema.merge(apiXlAutomat
   const x: z.infer<typeof apiGetPositionResponseSchema> = undefined as unknown as ApiGetPositionResponse
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const y: ApiGetPositionResponse = undefined as unknown as z.infer<typeof apiGetPositionResponseSchema>
-}
-
-export type ApiDeletePositionRequest = void
-export type ApiDeletePositionResponse = ApiPosition & ApiXlAutomatenDatabaseObject & ApiPositionMapping
-
-export const apiDeletePositionResponseSchema = apiPositionSchema
-  .merge(apiXlAutomatenDatabaseObjectSchema)
-  .merge(apiPositionMappingSchema)
-
-{
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const x: z.infer<typeof apiDeletePositionResponseSchema> = undefined as unknown as ApiDeletePositionResponse
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const y: ApiDeletePositionResponse = undefined as unknown as z.infer<typeof apiDeletePositionResponseSchema>
 }
 
 export type ApiGetPositionsRequest = void

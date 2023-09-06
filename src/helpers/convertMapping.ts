@@ -290,8 +290,8 @@ export const convertMappingToRequest = (request: NewMapping): ApiCreateMappingRe
   const result = {
     article_id: request.articleId,
     position_id: request.positionId,
-    ...(request.empty != null ? { empty: request.empty ? 1 : 0 } : {}),
-    ...(request.inventory != null ? { inventory: request.inventory } : {}),
+    ...("empty" in request ? { empty: request.empty == null ? null : request.empty ? 1 : 0 } : {}),
+    ...("inventory" in request ? { inventory: request.inventory ?? null } : {}),
   } satisfies ApiCreateMappingRequest
 
   return result
