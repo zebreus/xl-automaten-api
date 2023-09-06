@@ -24,12 +24,15 @@ export type {
 export type { Category, EditableCategory, NewCategory } from "helpers/convertCategory"
 export type { CategoryArticles } from "helpers/convertCategoryAvoidDependencyCycle"
 export type { EditableMachine, Machine, MachineExtraFields, MachineTrays, NewMachine } from "helpers/convertMachine"
+export type { EditableMapping, Mapping, MappingArticle, MappingPosition, NewMapping } from "helpers/convertMapping"
 export type { Mastermodule } from "helpers/convertMastermodule"
 export type { EditablePickup, NewPickup, Pickup, PickupItems } from "helpers/convertPickup"
 export type { EditablePickupItem, NewPickupItem, PickupItem } from "helpers/convertPickupItem"
 export type { EditablePosition, NewPosition, Position } from "helpers/convertPosition"
 export type { EditableSupplier, NewSupplier, Supplier, UpdateSupplier } from "helpers/convertSupplier"
 export type { EditableTray, NewTray, Tray, TrayPositions } from "helpers/convertTray"
+export type { EditableVoucher, NewVoucher, Voucher, VoucherTransactions } from "helpers/convertVoucher"
+export type { NewVoucherTransaction, VoucherTransaction } from "helpers/convertVoucherTransaction"
 export type { XlAutomatenDatabaseObject } from "helpers/convertXlAutomatenDatabaseObject"
 export type { ApiRequestOptions, AuthenticatedApiRequestOptions, FetchFunction } from "helpers/makeApiRequest"
 export { login } from "login"
@@ -42,6 +45,14 @@ export type {
   GetMachinesOptions,
   UpdateMachineOptions,
 } from "machine"
+export { createMapping, deleteMapping, getMapping, getMappings, updateMapping } from "mapping"
+export type {
+  CreateMappingOptions,
+  DeleteMappingOptions,
+  GetMappingOptions,
+  GetMappingsOptions,
+  UpdateMappingOptions,
+} from "mapping"
 export { getMastermodules } from "mastermodule"
 export type { GetMastermodulesOptions } from "mastermodule"
 export { createPickup, deletePickup, getPickup, getPickups, updatePickup } from "pickup"
@@ -72,3 +83,13 @@ export type {
 } from "supplier"
 export { createTray, deleteTray, getTray, getTrays, updateTray } from "tray"
 export type { CreateTrayOptions, DeleteTrayOptions, GetTrayOptions, GetTraysOptions, UpdateTrayOptions } from "tray"
+export { createVoucher, deleteVoucher, getVoucher, getVouchers, updateVoucher } from "voucher"
+export type {
+  CreateVoucherOptions,
+  DeleteVoucherOptions,
+  GetVoucherOptions,
+  GetVouchersOptions,
+  UpdateVoucherOptions,
+} from "voucher"
+export { createVoucherTransaction } from "voucherTransaction"
+export type { CreateVoucherTransactionOptions } from "voucherTransaction"

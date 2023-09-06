@@ -32,22 +32,6 @@ export type VoucherTransaction = {
   comment: string
 } & XlAutomatenDatabaseObject
 
-export type VoucherTransactionTransactions = {
-  nothing?: undefined
-}
-
-/** VoucherTransaction, but only the fields that can be edited */
-export type EditableVoucherTransaction = Omit<
-  VoucherTransaction,
-  | keyof XlAutomatenDatabaseObject
-  | "vouchertransaction"
-  | "initialAmount"
-  | "usedAmount"
-  | "createdBy"
-  | "blockedAt"
-  | "deletedAt"
->
-
 /** Data of a new vouchertransaction
  *
  * All fields that are not required for creating are set to optional.
