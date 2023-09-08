@@ -1,7 +1,7 @@
-import { createCategory, deleteCategory, getCategories, getCategory, updateCategory } from "category"
-import { Category } from "helpers/convertCategory"
-import { login } from "login"
-import { email, password } from "tests/login"
+import { email, password } from "./login.js"
+import { createCategory, deleteCategory, getCategories, getCategory, updateCategory } from "../category.js"
+import { Category } from "../helpers/convertCategory.js"
+import { login } from "../login.js"
 
 let token = ""
 

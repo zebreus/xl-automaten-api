@@ -1,4 +1,5 @@
-import { parseApiDate } from "helpers/apiDates"
+import { z } from "zod"
+import { parseApiDate } from "./apiDates.js"
 import {
   ApiTray,
   ApiTrayPositions,
@@ -7,14 +8,13 @@ import {
   apiTrayPositionsSchema,
   apiTraySchema,
   convertApiTrayWithPositions,
-} from "helpers/convertTray"
+} from "./convertTray.js"
 import {
   ApiXlAutomatenDatabaseObject,
   XlAutomatenDatabaseObject,
   apiXlAutomatenDatabaseObjectSchema,
   convertApiXlAutomatenDatabaseObject,
-} from "helpers/convertXlAutomatenDatabaseObject"
-import { z } from "zod"
+} from "./convertXlAutomatenDatabaseObject.js"
 
 /** A machine */
 export type Machine = {

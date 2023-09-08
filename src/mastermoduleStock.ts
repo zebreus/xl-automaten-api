@@ -2,8 +2,8 @@ import {
   MastermoduleStockArticle,
   apiGetMastermoduleStockArticlesResponseSchema,
   convertApiMastermoduleStockArticle,
-} from "helpers/convertMastermoduleStockArticle"
-import { AuthenticatedApiRequestOptions, makeApiRequest } from "helpers/makeApiRequest"
+} from "./helpers/convertMastermoduleStockArticle.js"
+import { AuthenticatedApiRequestOptions, makeApiRequest } from "./helpers/makeApiRequest.js"
 
 export type GetMastermoduleStockOptions = {
   /** id of the mastermodule you want to retrieve */

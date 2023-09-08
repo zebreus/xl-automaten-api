@@ -1,11 +1,11 @@
-import { parseApiDate } from "helpers/apiDates"
+import { z } from "zod"
+import { parseApiDate } from "./apiDates.js"
 import {
   ApiXlAutomatenDatabaseObject,
   XlAutomatenDatabaseObject,
   apiXlAutomatenDatabaseObjectSchema,
   convertApiXlAutomatenDatabaseObject,
-} from "helpers/convertXlAutomatenDatabaseObject"
-import { z } from "zod"
+} from "./convertXlAutomatenDatabaseObject.js"
 
 /** A pickupitem */
 export type PickupItem = {

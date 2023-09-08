@@ -1,13 +1,16 @@
-import { ApiPosition, Position, apiPositionSchema, convertApiPosition } from "helpers/convertPosition"
+import { z } from "zod"
+import { ApiPosition, Position, apiPositionSchema, convertApiPosition } from "./convertPosition.js"
 import {
   ApiXlAutomatenDatabaseObject,
   XlAutomatenDatabaseObject,
   apiXlAutomatenDatabaseObjectSchema,
   convertApiXlAutomatenDatabaseObject,
-} from "helpers/convertXlAutomatenDatabaseObject"
-import { z } from "zod"
+} from "./convertXlAutomatenDatabaseObject.js"
 
-/** A tray */
+/** A tray is a set of positions of the same type.
+ *
+ * For example a set of pusher positions or a set of locker box positions.
+ */
 export type Tray = {
   /** ID of the machine this tray belongs to */
   machineId: number
@@ -47,6 +50,10 @@ export type ApiTray = {
   /** Type of this tray
    *
    * TODO: What does this mean?
+   *
+   * 2 = pusher tray
+   *
+   * 3 = box tray
    */
   type: 1 | 2 | 3
   /** TODO: What does this mean?

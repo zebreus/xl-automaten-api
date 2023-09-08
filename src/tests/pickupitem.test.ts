@@ -1,10 +1,10 @@
-import { archiveArticle, createArticle, getArticles } from "article"
-import { PickupItem } from "helpers/convertPickupItem"
-import { login } from "login"
-import { createPickup, deletePickup } from "pickup"
-import { createPickupItem, deletePickupItem, updatePickupItem } from "pickupItem"
-import { createSupplier, deleteSupplier } from "supplier"
-import { email, mastermoduleId, password } from "tests/login"
+import { email, mastermoduleId, password } from "./login.js"
+import { archiveArticle, createArticle, getArticles } from "../article.js"
+import { PickupItem } from "../helpers/convertPickupItem.js"
+import { login } from "../login.js"
+import { createPickup, deletePickup } from "../pickup.js"
+import { createPickupItem, deletePickupItem, updatePickupItem } from "../pickupItem.js"
+import { createSupplier, deleteSupplier } from "../supplier.js"
 
 let token = ""
 

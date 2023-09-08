@@ -1,9 +1,9 @@
-import { Position } from "helpers/convertPosition"
-import { login } from "login"
-import { createMachine, deleteMachine } from "machine"
-import { createPosition, deletePosition, getPosition, getPositions, updatePosition } from "position"
-import { email, password } from "tests/login"
-import { createTray, deleteTray } from "tray"
+import { email, password } from "./login.js"
+import { Position } from "../helpers/convertPosition.js"
+import { login } from "../login.js"
+import { createMachine, deleteMachine } from "../machine.js"
+import { createPosition, deletePosition, getPosition, getPositions, updatePosition } from "../position.js"
+import { createTray, deleteTray } from "../tray.js"
 
 let token = ""
 

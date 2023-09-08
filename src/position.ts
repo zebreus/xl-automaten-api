@@ -8,13 +8,13 @@ import {
   apiUpdatePositionResponseSchema,
   convertApiPosition,
   convertPositionToRequest,
-} from "helpers/convertPosition"
+} from "./helpers/convertPosition.js"
 import {
   PositionMapping,
   apiDeletePositionResponseSchema,
   convertApiPositionWithMapping,
-} from "helpers/convertPositionAvoidDependencyCycle"
-import { AuthenticatedApiRequestOptions, makeApiRequest } from "helpers/makeApiRequest"
+} from "./helpers/convertPositionAvoidDependencyCycle.js"
+import { AuthenticatedApiRequestOptions, makeApiRequest } from "./helpers/makeApiRequest.js"
 
 export type CreatePositionOptions = {
   /** Data of the new position */

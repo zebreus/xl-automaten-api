@@ -1,8 +1,8 @@
-import { archiveArticle, createArticle, getArticle, getArticles, updateArticle } from "article"
-import { Article } from "helpers/convertArticle"
-import { login } from "login"
-import { createSupplier, deleteSupplier } from "supplier"
-import { email, password } from "tests/login"
+import { email, password } from "./login.js"
+import { archiveArticle, createArticle, getArticle, getArticles, updateArticle } from "../article.js"
+import { Article } from "../helpers/convertArticle.js"
+import { login } from "../login.js"
+import { createSupplier, deleteSupplier } from "../supplier.js"
 
 let token = ""
 

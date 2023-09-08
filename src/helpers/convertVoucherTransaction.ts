@@ -1,9 +1,9 @@
+import { z } from "zod"
 import {
   ApiXlAutomatenDatabaseObject,
   XlAutomatenDatabaseObject,
   convertApiXlAutomatenDatabaseObject,
-} from "helpers/convertXlAutomatenDatabaseObject"
-import { z } from "zod"
+} from "./convertXlAutomatenDatabaseObject.js"
 
 /** A transaction on a voucher*/
 export type VoucherTransaction = {

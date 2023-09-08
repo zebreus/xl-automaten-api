@@ -11,8 +11,8 @@ import {
   convertApiPickup,
   convertApiPickupWithItems,
   convertPickupToRequest,
-} from "helpers/convertPickup"
-import { AuthenticatedApiRequestOptions, makeApiRequest } from "helpers/makeApiRequest"
+} from "./helpers/convertPickup.js"
+import { AuthenticatedApiRequestOptions, makeApiRequest } from "./helpers/makeApiRequest.js"
 
 export type CreatePickupOptions = {
   /** Data of the new pickup */

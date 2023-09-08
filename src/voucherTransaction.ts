@@ -1,7 +1,7 @@
-import { Voucher, VoucherTransactions, convertApiVoucherWithTransactions } from "helpers/convertVoucher"
-import { NewVoucherTransaction, convertVoucherTransactionToRequest } from "helpers/convertVoucherTransaction"
-import { apiCreateVoucherTransactionResponseSchema } from "helpers/convertVoucherTransactionAvoidDependencyCycle"
-import { AuthenticatedApiRequestOptions, makeApiRequest } from "helpers/makeApiRequest"
+import { Voucher, VoucherTransactions, convertApiVoucherWithTransactions } from "./helpers/convertVoucher.js"
+import { NewVoucherTransaction, convertVoucherTransactionToRequest } from "./helpers/convertVoucherTransaction.js"
+import { apiCreateVoucherTransactionResponseSchema } from "./helpers/convertVoucherTransactionAvoidDependencyCycle.js"
+import { AuthenticatedApiRequestOptions, makeApiRequest } from "./helpers/makeApiRequest.js"
 
 export type CreateVoucherTransactionOptions = {
   /** ID of the affected voucher */

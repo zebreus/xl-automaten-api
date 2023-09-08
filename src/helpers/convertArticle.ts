@@ -1,11 +1,11 @@
-import { ApiCategory, Category, apiCategorySchema, convertApiCategory } from "helpers/convertCategory"
+import { z } from "zod"
+import { ApiCategory, Category, apiCategorySchema, convertApiCategory } from "./convertCategory.js"
 import {
   ApiXlAutomatenDatabaseObject,
   XlAutomatenDatabaseObject,
   apiXlAutomatenDatabaseObjectSchema,
   convertApiXlAutomatenDatabaseObject,
-} from "helpers/convertXlAutomatenDatabaseObject"
-import { z } from "zod"
+} from "./convertXlAutomatenDatabaseObject.js"
 
 /** A article */
 export type Article = {

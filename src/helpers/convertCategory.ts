@@ -1,10 +1,10 @@
+import { z } from "zod"
 import {
   ApiXlAutomatenDatabaseObject,
   XlAutomatenDatabaseObject,
   apiXlAutomatenDatabaseObjectSchema,
   convertApiXlAutomatenDatabaseObject,
-} from "helpers/convertXlAutomatenDatabaseObject"
-import { z } from "zod"
+} from "./convertXlAutomatenDatabaseObject.js"
 
 /** A category */
 export type Category = {

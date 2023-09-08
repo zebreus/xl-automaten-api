@@ -1,8 +1,8 @@
-import { Tray } from "helpers/convertTray"
-import { login } from "login"
-import { createMachine, deleteMachine } from "machine"
-import { email, password } from "tests/login"
-import { createTray, deleteTray, getTray, getTrays, updateTray } from "tray"
+import { email, password } from "./login.js"
+import { Tray } from "../helpers/convertTray.js"
+import { login } from "../login.js"
+import { createMachine, deleteMachine } from "../machine.js"
+import { createTray, deleteTray, getTray, getTrays, updateTray } from "../tray.js"
 
 let token = ""
 

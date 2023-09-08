@@ -1,7 +1,7 @@
-import { Machine } from "helpers/convertMachine"
-import { login } from "login"
-import { createMachine, deleteMachine, getMachine, getMachines, updateMachine } from "machine"
-import { email, password } from "tests/login"
+import { email, password } from "./login.js"
+import { Machine } from "../helpers/convertMachine.js"
+import { login } from "../login.js"
+import { createMachine, deleteMachine, getMachine, getMachines, updateMachine } from "../machine.js"
 
 let token = ""
 

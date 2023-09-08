@@ -1,14 +1,14 @@
-import { ApiArticle, Article, apiArticleSchema, convertApiArticle } from "helpers/convertArticle"
-import { ApiMachine, Machine, apiMachineSchema, convertApiMachine } from "helpers/convertMachine"
-import { ApiPosition, Position, apiPositionSchema, convertApiPosition } from "helpers/convertPosition"
-import { ApiTray, Tray, apiTraySchema, convertApiTray } from "helpers/convertTray"
+import { z } from "zod"
+import { ApiArticle, Article, apiArticleSchema, convertApiArticle } from "./convertArticle.js"
+import { ApiMachine, Machine, apiMachineSchema, convertApiMachine } from "./convertMachine.js"
+import { ApiPosition, Position, apiPositionSchema, convertApiPosition } from "./convertPosition.js"
+import { ApiTray, Tray, apiTraySchema, convertApiTray } from "./convertTray.js"
 import {
   ApiXlAutomatenDatabaseObject,
   XlAutomatenDatabaseObject,
   apiXlAutomatenDatabaseObjectSchema,
   convertApiXlAutomatenDatabaseObject,
-} from "helpers/convertXlAutomatenDatabaseObject"
-import { z } from "zod"
+} from "./convertXlAutomatenDatabaseObject.js"
 
 /** A mapping */
 export type Mapping = {

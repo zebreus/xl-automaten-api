@@ -13,8 +13,8 @@ import {
   convertApiMachineWithExtraFields,
   convertApiMachineWithTrays,
   convertMachineToRequest,
-} from "helpers/convertMachine"
-import { AuthenticatedApiRequestOptions, makeApiRequest } from "helpers/makeApiRequest"
+} from "./helpers/convertMachine.js"
+import { AuthenticatedApiRequestOptions, makeApiRequest } from "./helpers/makeApiRequest.js"
 
 export type CreateMachineOptions = {
   /** The new machine */

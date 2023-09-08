@@ -11,8 +11,8 @@ import {
   convertApiVoucher,
   convertApiVoucherWithTransactions,
   convertVoucherToRequest,
-} from "helpers/convertVoucher"
-import { AuthenticatedApiRequestOptions, makeApiRequest } from "helpers/makeApiRequest"
+} from "./helpers/convertVoucher.js"
+import { AuthenticatedApiRequestOptions, makeApiRequest } from "./helpers/makeApiRequest.js"
 
 export type CreateVoucherOptions = {
   /** Data of the new voucher */

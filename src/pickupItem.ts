@@ -7,8 +7,8 @@ import {
   apiUpdatePickupItemResponseSchema,
   convertApiPickupItem,
   convertPickupItemToRequest,
-} from "helpers/convertPickupItem"
-import { AuthenticatedApiRequestOptions, makeApiRequest } from "helpers/makeApiRequest"
+} from "./helpers/convertPickupItem.js"
+import { AuthenticatedApiRequestOptions, makeApiRequest } from "./helpers/makeApiRequest.js"
 
 export type CreatePickupItemOptions = {
   /** Data of the new pickupItem */

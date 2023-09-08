@@ -18,16 +18,16 @@
     "import/named": "off",
     "import/first": "error",
     "import/no-namespace": "error",
-    "import/extensions": [
-      "error",
-      "always",
-      {
-        "js": "never",
-        "jsx": "never",
-        "ts": "never",
-        "tsx": "never"
-      }
-    ],
+    // "import/extensions": [
+    //   "error",
+    //   "always",
+    //   {
+    //     "js": "never",
+    //     "jsx": "never",
+    //     "ts": "never",
+    //     "tsx": "never"
+    //   }
+    // ],
     "import/order": [
       "error",
       {

@@ -1,7 +1,7 @@
-import { Voucher } from "helpers/convertVoucher"
-import { login } from "login"
-import { email, password } from "tests/login"
-import { createVoucher, deleteVoucher, getVoucher, getVouchers, updateVoucher } from "voucher"
+import { email, password } from "./login.js"
+import { Voucher } from "../helpers/convertVoucher.js"
+import { login } from "../login.js"
+import { createVoucher, deleteVoucher, getVoucher, getVouchers, updateVoucher } from "../voucher.js"
 
 let token = ""
 

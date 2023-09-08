@@ -1,5 +1,5 @@
-import { parseApiDate } from "helpers/apiDates"
 import { z } from "zod"
+import { parseApiDate } from "./apiDates.js"
 
 export type XlAutomatenDatabaseObject = {
   /** When the data was last changed

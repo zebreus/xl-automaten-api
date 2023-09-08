@@ -13,8 +13,8 @@ import {
   convertApiArticleWithCategories,
   convertApiArticleWithExtraFields,
   convertArticleToRequest,
-} from "helpers/convertArticle"
-import { AuthenticatedApiRequestOptions, makeApiRequest } from "helpers/makeApiRequest"
+} from "./helpers/convertArticle.js"
+import { AuthenticatedApiRequestOptions, makeApiRequest } from "./helpers/makeApiRequest.js"
 
 export type CreateArticleOptions = {
   /** Data of the new article */

@@ -1,17 +1,17 @@
-import { parseApiDate } from "helpers/apiDates"
+import { z } from "zod"
+import { parseApiDate } from "./apiDates.js"
 import {
   ApiVoucherTransaction,
   VoucherTransaction,
   apiVoucherTransactionSchema,
   convertApiVoucherTransaction,
-} from "helpers/convertVoucherTransaction"
+} from "./convertVoucherTransaction.js"
 import {
   ApiXlAutomatenDatabaseObject,
   XlAutomatenDatabaseObject,
   apiXlAutomatenDatabaseObjectSchema,
   convertApiXlAutomatenDatabaseObject,
-} from "helpers/convertXlAutomatenDatabaseObject"
-import { z } from "zod"
+} from "./convertXlAutomatenDatabaseObject.js"
 
 /** A voucher */
 export type Voucher = {

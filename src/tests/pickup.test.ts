@@ -1,6 +1,6 @@
-import { login } from "login"
-import { createPickup, deletePickup, getPickup, getPickups, updatePickup } from "pickup"
-import { email, mastermoduleId, password } from "tests/login"
+import { email, mastermoduleId, password } from "./login.js"
+import { login } from "../login.js"
+import { createPickup, deletePickup, getPickup, getPickups, updatePickup } from "../pickup.js"
 
 let token = ""
 

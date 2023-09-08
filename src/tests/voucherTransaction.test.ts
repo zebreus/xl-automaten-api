@@ -1,7 +1,7 @@
-import { login } from "login"
-import { email, password } from "tests/login"
-import { createVoucher, deleteVoucher } from "voucher"
-import { createVoucherTransaction } from "voucherTransaction"
+import { email, password } from "./login.js"
+import { login } from "../login.js"
+import { createVoucher, deleteVoucher } from "../voucher.js"
+import { createVoucherTransaction } from "../voucherTransaction.js"
 
 let token = ""
 

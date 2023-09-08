@@ -8,13 +8,13 @@ import {
   apiUpdateCategoryResponseSchema,
   convertApiCategory,
   convertCategoryToRequest,
-} from "helpers/convertCategory"
+} from "./helpers/convertCategory.js"
 import {
   CategoryArticles,
   apiDeleteCategoryResponseSchema,
   convertApiCategoryWithArticles,
-} from "helpers/convertCategoryAvoidDependencyCycle"
-import { AuthenticatedApiRequestOptions, makeApiRequest } from "helpers/makeApiRequest"
+} from "./helpers/convertCategoryAvoidDependencyCycle.js"
+import { AuthenticatedApiRequestOptions, makeApiRequest } from "./helpers/makeApiRequest.js"
 
 export type CreateCategoryOptions = {
   /** Data of the new category */

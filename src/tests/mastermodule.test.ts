@@ -1,7 +1,7 @@
-import { login } from "login"
-import { getMastermodules } from "mastermodule"
-import { getMastermoduleStock } from "mastermoduleStock"
-import { email, mastermoduleId, password } from "tests/login"
+import { email, mastermoduleId, password } from "./login.js"
+import { login } from "../login.js"
+import { getMastermodules } from "../mastermodule.js"
+import { getMastermoduleStock } from "../mastermoduleStock.js"
 
 let token = ""
 

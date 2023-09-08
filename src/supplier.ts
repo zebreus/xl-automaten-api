@@ -9,8 +9,8 @@ import {
   convertApiSupplier,
   convertSupplierToCreateRequest,
   convertSupplierToUpdateRequest,
-} from "helpers/convertSupplier"
-import { AuthenticatedApiRequestOptions, makeApiRequest } from "helpers/makeApiRequest"
+} from "./helpers/convertSupplier.js"
+import { AuthenticatedApiRequestOptions, makeApiRequest } from "./helpers/makeApiRequest.js"
 
 export type CreateSupplierOptions = {
   /** Data of the new supplier */

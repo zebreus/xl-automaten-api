@@ -1,7 +1,7 @@
-import { Supplier } from "helpers/convertSupplier"
-import { login } from "login"
-import { createSupplier, deleteSupplier, getSupplier, getSuppliers, updateSupplier } from "supplier"
-import { email, password } from "tests/login"
+import { email, password } from "./login.js"
+import { Supplier } from "../helpers/convertSupplier.js"
+import { login } from "../login.js"
+import { createSupplier, deleteSupplier, getSupplier, getSuppliers, updateSupplier } from "../supplier.js"
 
 let token = ""
 

@@ -1,5 +1,5 @@
-import { ApiRequestOptions, makeApiRequest } from "helpers/makeApiRequest"
 import { z } from "zod"
+import { ApiRequestOptions, makeApiRequest } from "./helpers/makeApiRequest.js"
 
 /** Options for obtaining a new token */
 export type LoginOptions = {

@@ -1,5 +1,9 @@
-import { Mastermodule, apiGetMastermodulesResponseSchema, convertApiMastermodule } from "helpers/convertMastermodule"
-import { AuthenticatedApiRequestOptions, makeApiRequest } from "helpers/makeApiRequest"
+import {
+  Mastermodule,
+  apiGetMastermodulesResponseSchema,
+  convertApiMastermodule,
+} from "./helpers/convertMastermodule.js"
+import { AuthenticatedApiRequestOptions, makeApiRequest } from "./helpers/makeApiRequest.js"
 
 export type GetMastermodulesOptions = AuthenticatedApiRequestOptions
 

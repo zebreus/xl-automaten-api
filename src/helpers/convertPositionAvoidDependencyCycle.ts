@@ -1,17 +1,17 @@
-import { ApiMapping, Mapping, apiMappingSchema, convertApiMapping } from "helpers/convertMapping"
+import { z } from "zod"
+import { ApiMapping, Mapping, apiMappingSchema, convertApiMapping } from "./convertMapping.js"
 import {
   ApiPosition,
   MinimalApiPositionResponse,
   Position,
   apiPositionSchema,
   convertApiPosition,
-} from "helpers/convertPosition"
+} from "./convertPosition.js"
 import {
   ApiXlAutomatenDatabaseObject,
   XlAutomatenDatabaseObject,
   apiXlAutomatenDatabaseObjectSchema,
-} from "helpers/convertXlAutomatenDatabaseObject"
-import { z } from "zod"
+} from "./convertXlAutomatenDatabaseObject.js"
 
 export type PositionMapping = {
   /** The mapping that used this position */

@@ -1,12 +1,12 @@
-import { formatApiDate, parseApiDate } from "helpers/apiDates"
-import { ApiPickupItem, PickupItem, apiPickupItemSchema, convertApiPickupItem } from "helpers/convertPickupItem"
+import { z } from "zod"
+import { formatApiDate, parseApiDate } from "./apiDates.js"
+import { ApiPickupItem, PickupItem, apiPickupItemSchema, convertApiPickupItem } from "./convertPickupItem.js"
 import {
   ApiXlAutomatenDatabaseObject,
   XlAutomatenDatabaseObject,
   apiXlAutomatenDatabaseObjectSchema,
   convertApiXlAutomatenDatabaseObject,
-} from "helpers/convertXlAutomatenDatabaseObject"
-import { z } from "zod"
+} from "./convertXlAutomatenDatabaseObject.js"
 
 /** A pickup */
 export type Pickup = {

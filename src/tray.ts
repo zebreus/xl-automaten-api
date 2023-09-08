@@ -11,8 +11,8 @@ import {
   convertApiTray,
   convertApiTrayWithPositions,
   convertTrayToRequest,
-} from "helpers/convertTray"
-import { AuthenticatedApiRequestOptions, makeApiRequest } from "helpers/makeApiRequest"
+} from "./helpers/convertTray.js"
+import { AuthenticatedApiRequestOptions, makeApiRequest } from "./helpers/makeApiRequest.js"
 
 export type CreateTrayOptions = {
   /** Data of the new tray */

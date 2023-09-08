@@ -1,5 +1,5 @@
-import { login } from "login"
-import { email, password } from "tests/login"
+import { email, password } from "./login.js"
+import { login } from "../login.js"
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 const getToken = async () => {

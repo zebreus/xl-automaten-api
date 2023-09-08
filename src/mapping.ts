@@ -12,8 +12,8 @@ import {
   convertApiMappingWithArticle,
   convertApiMappingWithPosition,
   convertMappingToRequest,
-} from "helpers/convertMapping"
-import { AuthenticatedApiRequestOptions, makeApiRequest } from "helpers/makeApiRequest"
+} from "./helpers/convertMapping.js"
+import { AuthenticatedApiRequestOptions, makeApiRequest } from "./helpers/makeApiRequest.js"
 
 export type CreateMappingOptions = {
   /** Data of the new mapping */

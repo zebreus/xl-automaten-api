@@ -1,14 +1,6 @@
-import {
-  ApiVoucher,
-  ApiVoucherTransactions,
-  apiVoucherSchema,
-  apiVoucherTransactionsSchema,
-} from "helpers/convertVoucher"
-import {
-  ApiXlAutomatenDatabaseObject,
-  apiXlAutomatenDatabaseObjectSchema,
-} from "helpers/convertXlAutomatenDatabaseObject"
 import { z } from "zod"
+import { ApiVoucher, ApiVoucherTransactions, apiVoucherSchema, apiVoucherTransactionsSchema } from "./convertVoucher.js"
+import { ApiXlAutomatenDatabaseObject, apiXlAutomatenDatabaseObjectSchema } from "./convertXlAutomatenDatabaseObject.js"
 
 export type ApiCreateVoucherTransactionResponse = ApiVoucher & ApiXlAutomatenDatabaseObject & ApiVoucherTransactions
 
