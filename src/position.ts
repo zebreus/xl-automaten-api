@@ -173,3 +173,19 @@ export const deletePosition = async (options: DeletePositionOptions): Promise<Po
 
   return position
 }
+
+/** Calculate the name that will be displayed for this position from the trays slotId and the positions number
+ *
+ * ```typescript
+ * const positionName = calculatePositionDisplayName(tray.slot, position.number)
+ *
+ * calculatePositionDisplayName(9, 1) // "122"
+ * ```
+ *
+ * This is the name that will be displayed to users in the mastermodule UI
+ */
+export const calculatePositionDisplayName = (traySlot: number, positionNumber: number) => {
+  const baseNumber = traySlot < 9 ? 100 * traySlot + 10 * traySlot : 100 * (traySlot - 8) + 10 * (traySlot - 7) + 2
+  const positionName = baseNumber + (positionNumber - 1)
+  return "" + positionName
+}

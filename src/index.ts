@@ -71,7 +71,14 @@ export type {
 } from "./pickup.js"
 export { createPickupItem, deletePickupItem, updatePickupItem } from "./pickupItem.js"
 export type { CreatePickupItemOptions, DeletePickupItemOptions, UpdatePickupItemOptions } from "./pickupItem.js"
-export { createPosition, deletePosition, getPosition, getPositions, updatePosition } from "./position.js"
+export {
+  calculatePositionDisplayName,
+  createPosition,
+  deletePosition,
+  getPosition,
+  getPositions,
+  updatePosition,
+} from "./position.js"
 export type {
   CreatePositionOptions,
   DeletePositionOptions,
